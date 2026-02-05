@@ -57,17 +57,18 @@
             
             json.table.rows.forEach(row => {
                 if (row.c[0]) {
+                    // Форматуємо дату з таблиці (колонка A)
                     const key = row.c[0].f || row.c[0].v;
                     calendarData[key] = {
-                        name: row.c[1]?.v || "",
-                        color: row.c[2]?.v || "зелений",
-                        word: row.c[3]?.v || "",
-                        readings: row.c[4]?.v || ""
+                        name: row.c[1]?.v || "",      // Назва (колонка B)
+                        color: row.c[2]?.v || "зелений", // Колір (колонка C)
+                        word: row.c[3]?.v || "",      // Читання (колонка D) - у вас це "підтримка"
+                        note: row.c[4]?.v || ""       // Увага (колонка E) - у вас це "вказівка"
                     };
                 }
             });
             show();
-        } catch (e) { console.error("Помилка:", e); }
+        } catch (e) { console.error("Помилка завантаження:", e); }
     }
 
     function show() {
@@ -80,12 +81,27 @@
         document.getElementById('day-num').innerText = dt.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
 
         const day = calendarData[k];
+        
+        // Відображаємо дані з вашої таблиці
         document.getElementById('feast').innerText = day ? day.name : "Звичайний день";
         document.getElementById('word').innerText = day ? day.word : "Мир та Добро!";
-        document.getElementById('readings').innerText = day ? "📖 " + day.readings : "";
         
-        const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a" };
-        const activeColor = day ? colors[day.color.toLowerCase()] : "#2e7d32";
+        // Додаємо вказівку (Увага), якщо вона є
+        const readingsBox = document.getElementById('readings');
+        if (day && day.note) {
+            readingsBox.style.display = "block";
+            readingsBox.innerText = "⚠️ " + day.note;
+        } else {
+            readingsBox.style.display = "none";
+        }
+        
+        const colors = { 
+            "зелений": "#2e7d32", 
+            "білий": "#d4af37", 
+            "червоний": "#b71c1c", 
+            "фіолетовий": "#6a1b9a" 
+        };
+        const activeColor = day ? (colors[day.color.toLowerCase()] || "#2e7d32") : "#2e7d32";
         document.documentElement.style.setProperty('--lit-color', activeColor);
     }
 
