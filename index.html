@@ -9,14 +9,14 @@
         body { font-family: 'Segoe UI', sans-serif; background: #f4e7d7; color: #4a302c; text-align: center; padding: 15px; margin: 0; }
         .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid var(--lit-color); transition: 0.3s; }
         .logo-img { width: 130px; height: auto; margin-bottom: 10px; border-radius: 10px; }
-        .province-title { font-weight: bold; color: #8b4513; margin-bottom: 20px; text-transform: uppercase; font-size: 0.9em; }
+        .province-title { font-weight: bold; color: #8b4513; margin-bottom: 20px; text-transform: uppercase; font-size: 0.85em; line-height: 1.4; }
         .date-box { background: #4a302c; color: white; padding: 15px; border-radius: 15px; margin: 15px 0; }
         .day-name { font-size: 1.8em; font-weight: bold; text-transform: capitalize; }
         .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
         .nav-btn { background: var(--lit-color); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: bold; }
         .info { text-align: left; background: #fafafa; padding: 20px; border-radius: 15px; border-left: 6px solid var(--lit-color); min-height: 100px; }
         .feast { font-size: 1.5em; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
-        .readings { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; font-style: italic; color: #555; }
+        .details { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; font-style: italic; color: #555; font-size: 0.95em; }
     </style>
 </head>
 <body>
@@ -32,45 +32,46 @@
     </div>
 
     <div class="date-box">
-        <div id="day-name" class="day-name">Завантаження...</div>
-        <div id="day-num" style="font-size: 1.1em; opacity: 0.9;"></div>
+        <div id="day-name" class="day-name">...</div>
+        <div id="day-num"></div>
     </div>
 
     <div class="info">
-        <div id="feast" class="feast">Підключення...</div>
+        <div id="feast" class="feast">Завантаження...</div>
         <div id="word" style="line-height: 1.5;">Оновлення даних...</div>
-        <div id="note" class="readings" style="display:none;"></div>
+        <div id="note" class="details" style="display:none;"></div>
     </div>
 </div>
 
 <script>
-    const SHEET_ID = '1xTOdrmbildOgzFVQg6Jn2WUgcXw9HsGdOrVqyXvjNk';
-    // Додаємо випадковий параметр, щоб уникнути кешування Google
-    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&t=${new Date().getTime()}`;
+    // ВАШЕ ПОСИЛАННЯ CSV
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTp2B3UowKS1H29lqKFv_b-hSvx57xs4bRHeyFs5oK6ugob9splBLHHkT3hXY541nB6gMRxxReuKqNQ/pub?output=csv';
 
     let calendarData = {};
     let dt = new Date();
 
     async function loadData() {
         try {
-            const res = await fetch(SHEET_URL);
-            const text = await res.text();
-            const json = JSON.parse(text.substr(47).slice(0, -2));
+            const response = await fetch(CSV_URL + '&t=' + new Date().getTime());
+            const text = await response.text();
             
-            json.table.rows.forEach(row => {
-                if (row.c[0]) {
-                    const key = row.c[0].f || row.c[0].v;
-                    calendarData[key] = {
-                        name: row.c[1]?.v || "Будній день",
-                        color: row.c[2]?.v || "зелений",
-                        word: row.c[3]?.v || "Мир та Добро!",
-                        note: row.c[4]?.v || ""
+            // Проста обробка CSV рядків
+            const lines = text.split('\n');
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if (row.length >= 2) {
+                    const dateKey = row[0].trim();
+                    calendarData[dateKey] = {
+                        name: row[1] ? row[1].trim() : "Звичайний день",
+                        color: row[2] ? row[2].trim() : "зелений",
+                        reading: row[3] ? row[3].trim() : "Мир та Добро!",
+                        attention: row[4] ? row[4].trim() : ""
                     };
                 }
-            });
+            }
             show();
-        } catch (e) { 
-            document.getElementById('word').innerText = "Помилка завантаження даних.";
+        } catch (e) {
+            document.getElementById('word').innerText = "Помилка зв'язку з таблицею.";
         }
     }
 
@@ -81,30 +82,18 @@
         const k = `${y}-${m}-${d}`;
 
         document.getElementById('day-name').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long' });
-        document.getElementById('day-num').innerText = dt.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('day-num').innerText = dt.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
 
         const day = calendarData[k];
         document.getElementById('feast').innerText = day ? day.name : "Звичайний день";
-        document.getElementById('word').innerText = day ? (day.word || "Мир та Добро!") : "Мир та Добро!";
+        document.getElementById('word').innerText = day ? (day.reading || "Мир та Добро!") : "Мир та Добро!";
         
         const nBox = document.getElementById('note');
-        if (day && day.note) {
-            nBox.innerText = "Увага: " + day.note;
+        if (day && day.attention) {
+            nBox.innerText = "Увага: " + day.attention;
             nBox.style.display = "block";
         } else { nBox.style.display = "none"; }
         
         const colors = { 
             "зелений": "#2e7d32", "білий": "#d4af37", 
-            "червоний": "#b71c1c", "фіолетовий": "#6a1b9a" 
-        };
-        const activeColor = day ? (colors[day.color?.toLowerCase()] || "#2e7d32") : "#2e7d32";
-        document.documentElement.style.setProperty('--lit-color', activeColor);
-    }
-
-    function changeDate(n) { dt.setDate(dt.getDate() + n); show(); }
-    function resetDate() { dt = new Date(); show(); }
-
-    loadData();
-</script>
-</body>
-</html>
+            "червоний": "#b71c1c", "фіолетовий":
