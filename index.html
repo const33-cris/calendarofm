@@ -7,22 +7,23 @@
     <style>
         :root { --lit-color: #2e7d32; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4e7d7; color: #4a302c; text-align: center; padding: 15px; margin: 0; }
-        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid var(--lit-color); }
-        .logo-img { width: 110px; height: auto; margin-bottom: 10px; }
+        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid var(--lit-color); transition: 0.3s; }
+        .logo-img { width: 130px; height: auto; margin-bottom: 10px; border-radius: 10px; }
+        .province-title { font-weight: bold; color: #8b4513; margin-bottom: 20px; text-transform: uppercase; font-size: 0.9em; }
         .date-box { background: #4a302c; color: white; padding: 15px; border-radius: 15px; margin: 15px 0; }
         .day-name { font-size: 1.8em; font-weight: bold; text-transform: capitalize; }
         .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
-        .nav-btn { background: var(--lit-color); color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; flex: 1; font-weight: bold; }
-        .info { text-align: left; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid var(--lit-color); }
-        .feast { font-size: 1.3em; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
-        .readings { margin-top: 10px; font-weight: bold; font-size: 0.9em; border-top: 1px dashed #ccc; padding-top: 10px; }
+        .nav-btn { background: var(--lit-color); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: bold; }
+        .info { text-align: left; background: #fafafa; padding: 20px; border-radius: 15px; border-left: 6px solid var(--lit-color); min-height: 100px; }
+        .feast { font-size: 1.5em; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
+        .readings { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; font-style: italic; color: #555; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Coat_of_arms_of_the_Order_of_Friars_Minor.svg/1200px-Coat_of_arms_of_the_Order_of_Friars_Minor.svg.png" alt="Лого" class="logo-img">
-    <div style="font-weight: bold; color: #8b4513; margin-bottom: 20px;">Провінція св. Архангела Михаїла</div>
+    <img src="SMichaele.gif" alt="Лого" class="logo-img">
+    <div class="province-title">Провінція св. Архангела Михаїла<br>Братів Менших в Україні</div>
 
     <div class="nav-buttons">
         <button class="nav-btn" onclick="changeDate(-1)">←</button>
@@ -32,19 +33,20 @@
 
     <div class="date-box">
         <div id="day-name" class="day-name">Завантаження...</div>
-        <div id="day-num"></div>
+        <div id="day-num" style="font-size: 1.1em; opacity: 0.9;"></div>
     </div>
 
     <div class="info">
-        <div id="feast" class="feast">...</div>
-        <div id="word">Мир та Добро!</div>
-        <div id="readings" class="readings"></div>
+        <div id="feast" class="feast">Підключення...</div>
+        <div id="word" style="line-height: 1.5;">Оновлення даних...</div>
+        <div id="note" class="readings" style="display:none;"></div>
     </div>
 </div>
 
 <script>
     const SHEET_ID = '1xTOdrmbildOgzFVQg6Jn2WUgcXw9HsGdOrVqyXvjNk';
-    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    // Додаємо випадковий параметр, щоб уникнути кешування Google
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&t=${new Date().getTime()}`;
 
     let calendarData = {};
     let dt = new Date();
@@ -57,18 +59,19 @@
             
             json.table.rows.forEach(row => {
                 if (row.c[0]) {
-                    // Форматуємо дату з таблиці (колонка A)
                     const key = row.c[0].f || row.c[0].v;
                     calendarData[key] = {
-                        name: row.c[1]?.v || "",      // Назва (колонка B)
-                        color: row.c[2]?.v || "зелений", // Колір (колонка C)
-                        word: row.c[3]?.v || "",      // Читання (колонка D) - у вас це "підтримка"
-                        note: row.c[4]?.v || ""       // Увага (колонка E) - у вас це "вказівка"
+                        name: row.c[1]?.v || "Будній день",
+                        color: row.c[2]?.v || "зелений",
+                        word: row.c[3]?.v || "Мир та Добро!",
+                        note: row.c[4]?.v || ""
                     };
                 }
             });
             show();
-        } catch (e) { console.error("Помилка завантаження:", e); }
+        } catch (e) { 
+            document.getElementById('word').innerText = "Помилка завантаження даних.";
+        }
     }
 
     function show() {
@@ -78,30 +81,23 @@
         const k = `${y}-${m}-${d}`;
 
         document.getElementById('day-name').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long' });
-        document.getElementById('day-num').innerText = dt.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
+        document.getElementById('day-num').innerText = dt.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
 
         const day = calendarData[k];
-        
-        // Відображаємо дані з вашої таблиці
         document.getElementById('feast').innerText = day ? day.name : "Звичайний день";
-        document.getElementById('word').innerText = day ? day.word : "Мир та Добро!";
+        document.getElementById('word').innerText = day ? (day.word || "Мир та Добро!") : "Мир та Добро!";
         
-        // Додаємо вказівку (Увага), якщо вона є
-        const readingsBox = document.getElementById('readings');
+        const nBox = document.getElementById('note');
         if (day && day.note) {
-            readingsBox.style.display = "block";
-            readingsBox.innerText = "⚠️ " + day.note;
-        } else {
-            readingsBox.style.display = "none";
-        }
+            nBox.innerText = "Увага: " + day.note;
+            nBox.style.display = "block";
+        } else { nBox.style.display = "none"; }
         
         const colors = { 
-            "зелений": "#2e7d32", 
-            "білий": "#d4af37", 
-            "червоний": "#b71c1c", 
-            "фіолетовий": "#6a1b9a" 
+            "зелений": "#2e7d32", "білий": "#d4af37", 
+            "червоний": "#b71c1c", "фіолетовий": "#6a1b9a" 
         };
-        const activeColor = day ? (colors[day.color.toLowerCase()] || "#2e7d32") : "#2e7d32";
+        const activeColor = day ? (colors[day.color?.toLowerCase()] || "#2e7d32") : "#2e7d32";
         document.documentElement.style.setProperty('--lit-color', activeColor);
     }
 
