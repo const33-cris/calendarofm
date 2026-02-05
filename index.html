@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Францисканський Календар</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4e7d7; color: #4a302c; text-align: center; padding: 15px; margin: 0; }
+        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid #2e7d32; }
+        .logo-img { width: 110px; height: auto; margin-bottom: 10px; }
+        .date-box { background: #4a302c; color: white; padding: 15px; border-radius: 15px; margin: 15px 0; }
+        .day-name { font-size: 1.8em; font-weight: bold; text-transform: capitalize; }
+        .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
+        .nav-btn { background: #2e7d32; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; flex: 1; font-weight: bold; }
+        .info { text-align: left; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid #2e7d32; }
+        .feast { font-size: 1.3em; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <img src="file:///Users/cris/Pictures/SMichaele.gif" alt="Лого" class="logo-img">
+    <div style="font-weight: bold; color: #8b4513; margin-bottom: 20px;">Провінція св. Архангела Михаїла</div>
+
+    <div class="nav-buttons">
+        <button class="nav-btn" onclick="changeDate(-1)">←</button>
+        <button class="nav-btn" onclick="resetDate()">Сьогодні</button>
+        <button class="nav-btn" onclick="changeDate(1)">→</button>
+    </div>
+
+    <div class="date-box">
+        <div id="day-name" class="day-name">...</div>
+        <div id="day-num"></div>
+    </div>
+
+    <div class="info">
+        <div id="feast" class="feast">...</div>
+        <div id="word">Мир та Добро!</div>
+    </div>
+</div>
+
+<script>
+    const data = {
+        "2026-02-05": { n: "св. Агати, діви і мучениці", w: "Мужність у вірі. Благословення хліба й води." },
+        "2026-02-06": { n: "свв. Павла Мікі та соратників", w: "Перша п'ятниця місяця. Молитва за парафію." },
+        "2026-02-18": { n: "Попільна Середа", w: "Початок Великого Посту. Суворий піст." }
+    };
+
+    let dt = new Date();
+
+    function show() {
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const d = String(dt.getDate()).padStart(2, '0');
+        const k = `${y}-${m}-${d}`;
+
+        document.getElementById('day-name').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long' });
+        document.getElementById('day-num').innerText = dt.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
+
+        const day = data[k];
+        document.getElementById('feast').innerText = day ? day.n : "Звичайний день";
+        document.getElementById('word').innerText = day ? day.w : "Мир та Добро!";
+    }
+
+    function changeDate(n) { dt.setDate(dt.getDate() + n); show(); }
+    function resetDate() { dt = new Date(); show(); }
+
+    show();
+</script>
+</body>
+</html>
