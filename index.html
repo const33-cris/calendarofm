@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Францисканський Календар</title>
+    <title>Календар OFM</title>
     <style>
         :root { --lit-color: #2e7d32; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4e7d7; color: #4a302c; text-align: center; padding: 15px; margin: 0; }
-        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid var(--lit-color); transition: 0.3s; }
-        .logo-img { width: 130px; height: auto; margin-bottom: 10px; border-radius: 10px; }
+        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid var(--lit-color); }
+        .logo-img { width: 150px; height: auto; margin-bottom: 10px; }
         .province-title { font-weight: bold; color: #8b4513; margin-bottom: 20px; text-transform: uppercase; font-size: 0.85em; line-height: 1.4; }
         .date-box { background: #4a302c; color: white; padding: 15px; border-radius: 15px; margin: 15px 0; }
         .day-name { font-size: 1.8em; font-weight: bold; text-transform: capitalize; }
         .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
         .nav-btn { background: var(--lit-color); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: bold; }
-        .info { text-align: left; background: #fafafa; padding: 20px; border-radius: 15px; border-left: 6px solid var(--lit-color); min-height: 100px; }
+        .info { text-align: left; background: #fafafa; padding: 20px; border-radius: 15px; border-left: 6px solid var(--lit-color); min-height: 120px; }
         .feast { font-size: 1.5em; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
-        .details { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; font-style: italic; color: #555; font-size: 0.95em; }
+        .details { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; font-style: italic; color: #555; font-size: 0.9em; }
     </style>
 </head>
 <body>
@@ -38,13 +38,13 @@
 
     <div class="info">
         <div id="feast" class="feast">Завантаження...</div>
-        <div id="word" style="line-height: 1.5;">Оновлення даних...</div>
+        <div id="word" style="line-height: 1.6;">Мир та Добро!</div>
         <div id="note" class="details" style="display:none;"></div>
     </div>
 </div>
 
 <script>
-    // ВАШЕ ПОСИЛАННЯ CSV
+    // Ваше пряме посилання на CSV
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTp2B3UowKS1H29lqKFv_b-hSvx57xs4bRHeyFs5oK6ugob9splBLHHkT3hXY541nB6gMRxxReuKqNQ/pub?output=csv';
 
     let calendarData = {};
@@ -52,26 +52,32 @@
 
     async function loadData() {
         try {
-            const response = await fetch(CSV_URL + '&t=' + new Date().getTime());
+            const response = await fetch(CSV_URL);
             const text = await response.text();
             
-            // Проста обробка CSV рядків
-            const lines = text.split('\n');
-            for (let i = 1; i < lines.length; i++) {
-                const row = lines[i].split(',');
-                if (row.length >= 2) {
-                    const dateKey = row[0].trim();
+            // Розбиваємо текст на рядки
+            const lines = text.split(/\r?\n/);
+            
+            lines.forEach((line, index) => {
+                if (index === 0) return; // Пропускаємо заголовок
+                
+                // Розбиваємо рядок, враховуючи можливі коми всередині лапок
+                const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                
+                if (cols[0]) {
+                    const dateKey = cols[0].trim().replace(/"/g, "");
                     calendarData[dateKey] = {
-                        name: row[1] ? row[1].trim() : "Звичайний день",
-                        color: row[2] ? row[2].trim() : "зелений",
-                        reading: row[3] ? row[3].trim() : "Мир та Добро!",
-                        attention: row[4] ? row[4].trim() : ""
+                        name: (cols[1] || "").replace(/"/g, ""),
+                        color: (cols[2] || "зелений").replace(/"/g, "").trim().toLowerCase(),
+                        reading: (cols[3] || "").replace(/"/g, ""),
+                        attention: (cols[4] || "").replace(/"/g, "")
                     };
                 }
-            }
+            });
             show();
         } catch (e) {
-            document.getElementById('word').innerText = "Помилка зв'язку з таблицею.";
+            document.getElementById('feast').innerText = "Помилка зв'язку";
+            document.getElementById('word').innerText = "Будь ласка, перевірте Brave Shields.";
         }
     }
 
@@ -85,15 +91,28 @@
         document.getElementById('day-num').innerText = dt.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
 
         const day = calendarData[k];
+        
         document.getElementById('feast').innerText = day ? day.name : "Звичайний день";
         document.getElementById('word').innerText = day ? (day.reading || "Мир та Добро!") : "Мир та Добро!";
         
         const nBox = document.getElementById('note');
-        if (day && day.attention) {
+        if (day && day.attention && day.attention.trim() !== "") {
             nBox.innerText = "Увага: " + day.attention;
             nBox.style.display = "block";
         } else { nBox.style.display = "none"; }
         
         const colors = { 
             "зелений": "#2e7d32", "білий": "#d4af37", 
-            "червоний": "#b71c1c", "фіолетовий":
+            "червоний": "#b71c1c", "фіолетовий": "#6a1b9a" 
+        };
+        const activeColor = day ? (colors[day.color] || "#2e7d32") : "#2e7d32";
+        document.documentElement.style.setProperty('--lit-color', activeColor);
+    }
+
+    function changeDate(n) { dt.setDate(dt.getDate() + n); show(); }
+    function resetDate() { dt = new Date(); show(); }
+
+    loadData();
+</script>
+</body>
+</html>
