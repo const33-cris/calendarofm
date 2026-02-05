@@ -5,21 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Францисканський Календар</title>
     <style>
+        :root { --lit-color: #2e7d32; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4e7d7; color: #4a302c; text-align: center; padding: 15px; margin: 0; }
-        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid #2e7d32; }
+        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid var(--lit-color); }
         .logo-img { width: 110px; height: auto; margin-bottom: 10px; }
         .date-box { background: #4a302c; color: white; padding: 15px; border-radius: 15px; margin: 15px 0; }
         .day-name { font-size: 1.8em; font-weight: bold; text-transform: capitalize; }
         .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
-        .nav-btn { background: #2e7d32; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; flex: 1; font-weight: bold; }
-        .info { text-align: left; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid #2e7d32; }
+        .nav-btn { background: var(--lit-color); color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; flex: 1; font-weight: bold; }
+        .info { text-align: left; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid var(--lit-color); }
         .feast { font-size: 1.3em; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
+        .readings { margin-top: 10px; font-weight: bold; font-size: 0.9em; border-top: 1px dashed #ccc; padding-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <img src="file:///Users/cris/Pictures/SMichaele.gif" alt="Лого" class="logo-img">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Coat_of_arms_of_the_Order_of_Friars_Minor.svg/1200px-Coat_of_arms_of_the_Order_of_Friars_Minor.svg.png" alt="Лого" class="logo-img">
     <div style="font-weight: bold; color: #8b4513; margin-bottom: 20px;">Провінція св. Архангела Михаїла</div>
 
     <div class="nav-buttons">
@@ -29,24 +31,44 @@
     </div>
 
     <div class="date-box">
-        <div id="day-name" class="day-name">...</div>
+        <div id="day-name" class="day-name">Завантаження...</div>
         <div id="day-num"></div>
     </div>
 
     <div class="info">
         <div id="feast" class="feast">...</div>
         <div id="word">Мир та Добро!</div>
+        <div id="readings" class="readings"></div>
     </div>
 </div>
 
 <script>
-    const data = {
-        "2026-02-05": { n: "св. Агати, діви і мучениці", w: "Мужність у вірі. Благословення хліба й води." },
-        "2026-02-06": { n: "свв. Павла Мікі та соратників", w: "Перша п'ятниця місяця. Молитва за парафію." },
-        "2026-02-18": { n: "Попільна Середа", w: "Початок Великого Посту. Суворий піст." }
-    };
+    const SHEET_ID = '1xTOdrmbildOgzFVQg6Jn2WUgcXw9HsGdOrVqyXvjNk';
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
+    let calendarData = {};
     let dt = new Date();
+
+    async function loadData() {
+        try {
+            const res = await fetch(SHEET_URL);
+            const text = await res.text();
+            const json = JSON.parse(text.substr(47).slice(0, -2));
+            
+            json.table.rows.forEach(row => {
+                if (row.c[0]) {
+                    const key = row.c[0].f || row.c[0].v;
+                    calendarData[key] = {
+                        name: row.c[1]?.v || "",
+                        color: row.c[2]?.v || "зелений",
+                        word: row.c[3]?.v || "",
+                        readings: row.c[4]?.v || ""
+                    };
+                }
+            });
+            show();
+        } catch (e) { console.error("Помилка:", e); }
+    }
 
     function show() {
         const y = dt.getFullYear();
@@ -57,15 +79,20 @@
         document.getElementById('day-name').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long' });
         document.getElementById('day-num').innerText = dt.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
 
-        const day = data[k];
-        document.getElementById('feast').innerText = day ? day.n : "Звичайний день";
-        document.getElementById('word').innerText = day ? day.w : "Мир та Добро!";
+        const day = calendarData[k];
+        document.getElementById('feast').innerText = day ? day.name : "Звичайний день";
+        document.getElementById('word').innerText = day ? day.word : "Мир та Добро!";
+        document.getElementById('readings').innerText = day ? "📖 " + day.readings : "";
+        
+        const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a" };
+        const activeColor = day ? colors[day.color.toLowerCase()] : "#2e7d32";
+        document.documentElement.style.setProperty('--lit-color', activeColor);
     }
 
     function changeDate(n) { dt.setDate(dt.getDate() + n); show(); }
     function resetDate() { dt = new Date(); show(); }
 
-    show();
+    loadData();
 </script>
 </body>
 </html>
