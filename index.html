@@ -19,11 +19,12 @@
         .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
         .nav-btn { background: var(--franciscan-brown); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: bold; }
 
-        /* ВИПРАВЛЕНИЙ БЛОК ДАТИ */
-        .date-box { background: var(--lit-color); color: white; padding: 20px 15px; border-radius: 20px; margin: 15px 0; display: flex; flex-direction: column; gap: 2px; }
+        /* БЛОК ДАТИ: Середній рядок найбільший */
+        .date-box { background: var(--lit-color); color: white; padding: 20px 15px; border-radius: 20px; margin: 15px 0; display: flex; flex-direction: column; gap: 2px; transition: background 0.3s; }
         
-        .date-side { font-size: 1.1em; font-weight: 500; opacity: 0.9; } /* 1-й та 3-й рядки (менші) */
-        .day-main { font-size: 1.7em; font-weight: bold; padding: 5px 0; } /* СЕРЕДНІЙ РЯДОК (НАЙБІЛЬШИЙ) */
+        .date-side { font-size: 1.1em; font-weight: 500; opacity: 0.9; text-transform: lowercase; } 
+        .day-main { font-size: 1.75em; font-weight: bold; padding: 5px 0; line-height: 1.2; } 
+        .period-bottom { font-size: 1.25em; font-weight: bold; text-transform: none; }
 
         .info-block { text-align: left; background: #fafafa; padding: 15px; border-radius: 15px; border-left: 6px solid var(--lit-color); margin-bottom: 12px; }
         .block-label { font-size: 0.7em; font-weight: bold; color: #888; text-transform: uppercase; margin-bottom: 4px; }
@@ -48,11 +49,9 @@
     </div>
 
     <div id="lit-bg" class="date-box">
-        <div id="display-date-top" class="date-side">Завантаження...</div>
-        
+        <div id="display-date-top" class="date-side">...</div>
         <div id="display-day-title" class="day-main">...</div>
-        
-        <div class="date-side">Звичайний період</div>
+        <div id="display-period" class="period-bottom">...</div>
     </div>
 
     <div class="main-content">
@@ -96,12 +95,13 @@
                     const key = row[0].trim().replace(/"/g, "");
                     calendarData[key] = {
                         title: (row[1] || "").replace(/"/g, ""),
-                        color: (row[2] || "зелений").replace(/"/g, "").trim().toLowerCase(),
-                        mass: (row[3] || "").replace(/"/g, ""),
-                        lh: (row[4] || "").replace(/"/g, ""),
-                        readings: (row[5] || "").replace(/"/g, ""),
-                        attention: (row[6] || "").replace(/"/g, ""),
-                        ofm: (row[7] || "").replace(/"/g, "")
+                        period: (row[2] || "Звичайний період").replace(/"/g, ""), // Колонка C
+                        color: (row[3] || "зелений").replace(/"/g, "").trim().toLowerCase(), // Колонка D
+                        mass: (row[4] || "").replace(/"/g, ""), // Колонка E
+                        lh: (row[5] || "").replace(/"/g, ""), // Колонка F
+                        readings: (row[6] || "").replace(/"/g, ""), // Колонка G
+                        attention: (row[7] || "").replace(/"/g, ""), // Колонка H
+                        ofm: (row[8] || "").replace(/"/g, "") // Колонка I
                     };
                 }
             }
@@ -119,7 +119,8 @@
         document.getElementById('display-date-top').innerText = dateStr;
 
         const day = calendarData[k];
-        document.getElementById('display-day-title').innerText = day ? day.title : "Звичайний день";
+        document.getElementById('display-day-title').innerText = day ? day.title : "День звичайний";
+        document.getElementById('display-period').innerText = day ? day.period : "Звичайний період";
         document.getElementById('data-mass').innerText = day ? day.mass : "Згідно з календарем";
         document.getElementById('data-lh').innerText = day ? day.lh : "Поточний тиждень";
         document.getElementById('data-readings').innerText = day ? day.readings : "Див. Лекціонарій";
