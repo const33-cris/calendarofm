@@ -16,15 +16,30 @@
         .logo-img { width: 130px; height: auto; margin-bottom: 10px; border-radius: 10px; }
         .province-title { font-weight: bold; color: var(--franciscan-brown); margin-bottom: 20px; text-transform: uppercase; font-size: 0.85em; line-height: 1.4; }
 
-        .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
-        .nav-btn { background: var(--franciscan-brown); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: bold; }
+        /* КНОПКИ: Збільшено розмір та шрифт */
+        .nav-buttons { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 25px; }
+        .nav-btn { 
+            background: var(--franciscan-brown); 
+            color: white; 
+            border: none; 
+            padding: 18px 10px; /* Збільшено внутрішній відступ */
+            border-radius: 15px; 
+            cursor: pointer; 
+            flex: 1; 
+            font-weight: bold; 
+            font-size: 1.3em; /* Більший розмір стрілок та тексту */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+        }
+        .nav-btn:active { transform: scale(0.95); }
+        .btn-today { font-size: 1em; } /* Текст "Сьогодні" трохи менший за стрілки, щоб помістився */
 
-        /* БЛОК ДАТИ: Середній рядок найбільший */
         .date-box { background: var(--lit-color); color: white; padding: 20px 15px; border-radius: 20px; margin: 15px 0; display: flex; flex-direction: column; gap: 2px; transition: background 0.3s; }
-        
         .date-side { font-size: 1.1em; font-weight: 500; opacity: 0.9; text-transform: lowercase; } 
         .day-main { font-size: 1.75em; font-weight: bold; padding: 5px 0; line-height: 1.2; } 
-        .period-bottom { font-size: 1.25em; font-weight: bold; text-transform: none; }
+        .period-bottom { font-size: 1.25em; font-weight: bold; }
 
         .info-block { text-align: left; background: #fafafa; padding: 15px; border-radius: 15px; border-left: 6px solid var(--lit-color); margin-bottom: 12px; }
         .block-label { font-size: 0.7em; font-weight: bold; color: #888; text-transform: uppercase; margin-bottom: 4px; }
@@ -44,7 +59,7 @@
 
     <div class="nav-buttons">
         <button class="nav-btn" onclick="changeDate(-1)">←</button>
-        <button class="nav-btn" onclick="resetDate()">Сьогодні</button>
+        <button class="nav-btn btn-today" onclick="resetDate()">Сьогодні</button>
         <button class="nav-btn" onclick="changeDate(1)">→</button>
     </div>
 
@@ -95,13 +110,13 @@
                     const key = row[0].trim().replace(/"/g, "");
                     calendarData[key] = {
                         title: (row[1] || "").replace(/"/g, ""),
-                        period: (row[2] || "Звичайний період").replace(/"/g, ""), // Колонка C
-                        color: (row[3] || "зелений").replace(/"/g, "").trim().toLowerCase(), // Колонка D
-                        mass: (row[4] || "").replace(/"/g, ""), // Колонка E
-                        lh: (row[5] || "").replace(/"/g, ""), // Колонка F
-                        readings: (row[6] || "").replace(/"/g, ""), // Колонка G
-                        attention: (row[7] || "").replace(/"/g, ""), // Колонка H
-                        ofm: (row[8] || "").replace(/"/g, "") // Колонка I
+                        period: (row[2] || "Звичайний період").replace(/"/g, ""),
+                        color: (row[3] || "зелений").replace(/"/g, "").trim().toLowerCase(),
+                        mass: (row[4] || "").replace(/"/g, ""),
+                        lh: (row[5] || "").replace(/"/g, ""),
+                        readings: (row[6] || "").replace(/"/g, ""),
+                        attention: (row[7] || "").replace(/"/g, ""),
+                        ofm: (row[8] || "").replace(/"/g, "")
                     };
                 }
             }
@@ -120,10 +135,10 @@
 
         const day = calendarData[k];
         document.getElementById('display-day-title').innerText = day ? day.title : "День звичайний";
-        document.getElementById('display-period').innerText = day ? day.period : "Звичайний період";
+        document.getElementById('display-period').innerText = day ? day.period : "";
         document.getElementById('data-mass').innerText = day ? day.mass : "Згідно з календарем";
-        document.getElementById('data-lh').innerText = day ? day.lh : "Поточний тиждень";
-        document.getElementById('data-readings').innerText = day ? day.readings : "Див. Лекціонарій";
+        document.getElementById('data-lh').innerText = day ? day.lh : "-";
+        document.getElementById('data-readings').innerText = day ? day.readings : "-";
 
         const attBox = document.getElementById('block-attention');
         if (day && day.attention && day.attention.trim() !== "") {
