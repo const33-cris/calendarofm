@@ -138,7 +138,7 @@
         document.getElementById('display-period').innerText = day ? day.period : "";
         document.getElementById('data-mass').innerText = day ? day.mass : "Згідно з календарем";
         document.getElementById('data-lh').innerText = day ? day.lh : "-";
-        document.getElementById('data-readings').innerText = day ? day.readings : "-";
+        document.getElementById('data-readings').innerHTML = day ? day.readings.replace(/;/g, ';<br>') : "-";
 
         const attBox = document.getElementById('block-attention');
         if (day && day.attention && day.attention.trim() !== "") {
