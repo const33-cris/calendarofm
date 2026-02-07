@@ -5,32 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ордо OFM Україна</title>
     <style>
-        :root { --lit-color: #2e7d32; }
+        :root { 
+            --lit-color: #2e7d32; 
+            --franciscan-brown: #4a302c; /* Основний коричневий колір */
+        }
         body { font-family: 'Segoe UI', sans-serif; background: #f4e7d7; color: #4a302c; text-align: center; padding: 15px; margin: 0; }
         
-        /* Повертаємо стиль великої картки */
         .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border-top: 12px solid var(--lit-color); }
         
-        /* Повертаємо класичний вигляд логотипу */
         .logo-img { width: 130px; height: auto; margin-bottom: 10px; border-radius: 10px; }
-        .province-title { font-weight: bold; color: #8b4513; margin-bottom: 20px; text-transform: uppercase; font-size: 0.85em; line-height: 1.4; }
+        .province-title { font-weight: bold; color: var(--franciscan-brown); margin-bottom: 20px; text-transform: uppercase; font-size: 0.85em; line-height: 1.4; }
 
+        /* Кнопки тепер завжди коричневі */
         .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
-        .nav-btn { background: var(--lit-color); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: bold; }
+        .nav-btn { background: var(--franciscan-brown); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: bold; transition: opacity 0.2s; }
+        .nav-btn:hover { opacity: 0.9; }
 
-        /* Темний блок дати як раніше */
-        .date-box { background: #4a302c; color: white; padding: 15px; border-radius: 15px; margin: 15px 0; }
+        /* Блок дати змінює колір згідно літургійного дня */
+        .date-box { background: var(--lit-color); color: white; padding: 15px; border-radius: 15px; margin: 15px 0; transition: background-color 0.3s; }
         .day-name { font-size: 1.6em; font-weight: bold; }
 
-        /* Нові блоки інформації, але в стилі старого дизайну */
-        .info-block { text-align: left; background: #fafafa; padding: 15px; border-radius: 15px; border-left: 6px solid var(--lit-color); margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .info-block { text-align: left; background: #fafafa; padding: 15px; border-radius: 15px; border-left: 6px solid var(--lit-color); margin-bottom: 12px; }
         .block-label { font-size: 0.7em; font-weight: bold; color: #888; text-transform: uppercase; margin-bottom: 4px; }
         .block-text { font-size: 1.1em; line-height: 1.4; color: #2c1e1a; }
 
         .ofm-section { background: #fff3e0; border-left-color: #ef6c00; }
         .ofm-label { color: #e65100; font-weight: bold; }
         
-        .footer { margin-top: 20px; font-weight: bold; color: #4a302c; opacity: 0.7; }
+        .footer { margin-top: 20px; font-weight: bold; color: var(--franciscan-brown); opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -45,7 +47,7 @@
         <button class="nav-btn" onclick="changeDate(1)">→</button>
     </div>
 
-    <div class="date-box">
+    <div id="lit-bg" class="date-box">
         <div id="display-date" style="font-size: 0.8em; opacity: 0.9; margin-bottom: 5px;"></div>
         <div id="display-day-title" class="day-name">Завантаження...</div>
     </div>
@@ -55,34 +57,28 @@
             <div class="block-label">Меса</div>
             <div id="data-mass" class="block-text">...</div>
         </div>
-
         <div class="info-block">
             <div class="block-label">Літургія Годин</div>
             <div id="data-lh" class="block-text">...</div>
         </div>
-
         <div class="info-block">
             <div class="block-label">Читання</div>
             <div id="data-readings" class="block-text" style="color: #1a237e;">...</div>
         </div>
-
         <div id="block-attention" class="info-block" style="display:none;">
             <div class="block-label">Увага</div>
             <div id="data-attention" class="block-text">...</div>
         </div>
-
         <div id="block-ofm" class="info-block ofm-section" style="display:none;">
             <div class="block-label ofm-label">Родина OFM</div>
             <div id="data-ofm" class="block-text">...</div>
         </div>
     </div>
-
     <div class="footer">Мир та Добро!</div>
 </div>
 
 <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTp2B3UowKS1H29lqKFv_b-hSvx57xs4bRHeyFs5oK6ugob9splBLHHkT3hXY541nB6gMRxxReuKqNQ/pub?output=csv';
-
     let calendarData = {};
     let dt = new Date();
 
@@ -91,7 +87,6 @@
             const response = await fetch(CSV_URL + '&t=' + new Date().getTime());
             const text = await response.text();
             const lines = text.split(/\r?\n/);
-            
             for (let i = 1; i < lines.length; i++) {
                 const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (row[0]) {
@@ -145,7 +140,6 @@
 
     function changeDate(n) { dt.setDate(dt.getDate() + n); show(); }
     function resetDate() { dt = new Date(); show(); }
-
     loadData();
 </script>
 </body>
