@@ -19,11 +19,11 @@
         .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
         .nav-btn { background: var(--franciscan-brown); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: bold; }
 
-        /* Оновлений блок дати з різними розмірами шрифтів */
-        .date-box { background: var(--lit-color); color: white; padding: 20px 15px; border-radius: 20px; margin: 15px 0; display: flex; flex-direction: column; gap: 5px; }
-        .date-large { font-size: 1.4em; font-weight: bold; opacity: 0.95; }
-        .day-small { font-size: 1.1em; font-weight: 500; opacity: 0.85; }
-        .period-large { font-size: 1.4em; font-weight: bold; }
+        /* ВИПРАВЛЕНИЙ БЛОК ДАТИ */
+        .date-box { background: var(--lit-color); color: white; padding: 20px 15px; border-radius: 20px; margin: 15px 0; display: flex; flex-direction: column; gap: 2px; }
+        
+        .date-side { font-size: 1.1em; font-weight: 500; opacity: 0.9; } /* 1-й та 3-й рядки (менші) */
+        .day-main { font-size: 1.7em; font-weight: bold; padding: 5px 0; } /* СЕРЕДНІЙ РЯДОК (НАЙБІЛЬШИЙ) */
 
         .info-block { text-align: left; background: #fafafa; padding: 15px; border-radius: 15px; border-left: 6px solid var(--lit-color); margin-bottom: 12px; }
         .block-label { font-size: 0.7em; font-weight: bold; color: #888; text-transform: uppercase; margin-bottom: 4px; }
@@ -48,9 +48,11 @@
     </div>
 
     <div id="lit-bg" class="date-box">
-        <div id="display-date-top" class="date-large">Завантаження...</div>
-        <div id="display-day-title" class="day-small">...</div>
-        <div class="period-large">Звичайний період</div>
+        <div id="display-date-top" class="date-side">Завантаження...</div>
+        
+        <div id="display-day-title" class="day-main">...</div>
+        
+        <div class="date-side">Звичайний період</div>
     </div>
 
     <div class="main-content">
@@ -79,69 +81,4 @@
 </div>
 
 <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTp2B3UowKS1H29lqKFv_b-hSvx57xs4bRHeyFs5oK6ugob9splBLHHkT3hXY541nB6gMRxxReuKqNQ/pub?output=csv';
-    let calendarData = {};
-    let dt = new Date();
-
-    async function loadData() {
-        try {
-            const response = await fetch(CSV_URL + '&t=' + new Date().getTime());
-            const text = await response.text();
-            const lines = text.split(/\r?\n/);
-            for (let i = 1; i < lines.length; i++) {
-                const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if (row.length > 1 && row[0]) {
-                    const key = row[0].trim().replace(/"/g, "");
-                    calendarData[key] = {
-                        title: (row[1] || "").replace(/"/g, ""),
-                        color: (row[2] || "зелений").replace(/"/g, "").trim().toLowerCase(),
-                        mass: (row[3] || "").replace(/"/g, ""),
-                        lh: (row[4] || "").replace(/"/g, ""),
-                        readings: (row[5] || "").replace(/"/g, ""),
-                        attention: (row[6] || "").replace(/"/g, ""),
-                        ofm: (row[7] || "").replace(/"/g, "")
-                    };
-                }
-            }
-            show();
-        } catch (e) { console.error("Помилка завантаження:", e); }
-    }
-
-    function show() {
-        const y = dt.getFullYear();
-        const m = String(dt.getMonth() + 1).padStart(2, '0');
-        const d = String(dt.getDate()).padStart(2, '0');
-        const k = `${y}-${m}-${d}`;
-
-        const dateStr = dt.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
-        document.getElementById('display-date-top').innerText = dateStr;
-
-        const day = calendarData[k];
-        document.getElementById('display-day-title').innerText = day ? day.title : "Звичайний день";
-        document.getElementById('data-mass').innerText = day ? day.mass : "Згідно з календарем";
-        document.getElementById('data-lh').innerText = day ? day.lh : "Поточний тиждень";
-        document.getElementById('data-readings').innerText = day ? day.readings : "Див. Лекціонарій";
-
-        const attBox = document.getElementById('block-attention');
-        if (day && day.attention && day.attention.trim() !== "") {
-            document.getElementById('data-attention').innerText = day.attention;
-            attBox.style.display = "block";
-        } else { attBox.style.display = "none"; }
-
-        const ofmBox = document.getElementById('block-ofm');
-        if (day && day.ofm && day.ofm.trim() !== "") {
-            document.getElementById('data-ofm').innerText = day.ofm;
-            ofmBox.style.display = "block";
-        } else { ofmBox.style.display = "none"; }
-
-        const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a" };
-        const activeColor = day ? (colors[day.color] || "#2e7d32") : "#2e7d32";
-        document.documentElement.style.setProperty('--lit-color', activeColor);
-    }
-
-    function changeDate(n) { dt.setDate(dt.getDate() + n); show(); }
-    function resetDate() { dt = new Date(); show(); }
-    loadData();
-</script>
-</body>
-</html>
+    const CSV_URL = '
