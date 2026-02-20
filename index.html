@@ -163,6 +163,19 @@
     function changeDate(n) { dt.setDate(dt.getDate() + n); show(); }
     function resetDate() { dt = new Date(); show(); }
     loadData();
+    function goToDate(selectedDate) {
+    if (!selectedDate) return;
+    
+    // Шукаємо в даних таблиці рядок з цією датою
+    // Припускаємо, що ваші дані збережені у масиві 'allDaysData'
+    const day = allDaysData.find(d => d.date === selectedDate);
+    
+    if (day) {
+        show(day); // Викликаємо вашу функцію відображення
+    } else {
+        alert("Дані для цієї дати ще не завантажені в таблицю.");
+    }
+}
 </script>
 </body>
 </html>
