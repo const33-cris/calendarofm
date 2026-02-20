@@ -102,7 +102,7 @@
 <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTp2B3UowKS1H29lqKFv_b-hSvx57xs4bRHeyFs5oK6ugob9splBLHHkT3hXY541nB6gMRxxReuKqNQ/pub?output=csv';
     let calendarData = {};
-    let dt = new Date();
+    let dt = new Date(); // Це наша робоча дата
 
     async function loadData() {
         try {
@@ -125,11 +125,31 @@
                     };
                 }
             }
-            show();
+            updateUI(); // Показуємо дані після завантаження
         } catch (e) { console.error(e); }
     }
 
-    function show() {
+    // Функція для зміни дати стрілками або кнопкою "Сьогодні"
+    function changeDate(days) {
+        dt.setDate(dt.getDate() + days);
+        updateUI();
+    }
+
+    function resetDate() {
+        dt = new Date();
+        updateUI();
+    }
+
+    // НОВА ФУНКЦІЯ: Перехід до вибраної дати з календарика
+    function goToDate(selectedDate) {
+        if (!selectedDate) return;
+        // Оновлюємо нашу робочу дату dt значенням з вибору
+        dt = new Date(selectedDate);
+        updateUI();
+    }
+
+    // Основна функція оновлення екрана
+    function updateUI() {
         const y = dt.getFullYear();
         const m = String(dt.getMonth() + 1).padStart(2, '0');
         const d = String(dt.getDate()).padStart(2, '0');
@@ -139,54 +159,44 @@
         document.getElementById('display-date-top').innerText = dateStr;
 
         const day = calendarData[k];
+        
+        // Відображення заголовка
         document.getElementById('display-day-title').innerHTML = day ? day.title.replace(/;/g, ';<br>') : "День звичайний";
         document.getElementById('display-period').innerText = day ? day.period : "";
+        
+        // Дані блоків
         document.getElementById('data-mass').innerText = day ? day.mass : "Згідно з календарем";
         document.getElementById('data-lh').innerText = day ? day.lh : "-";
         document.getElementById('data-readings').innerHTML = day ? day.readings.replace(/;/g, ';<br>') : "-";
 
+        // Блок Увага
         const attBox = document.getElementById('block-attention');
         if (day && day.attention && day.attention.trim() !== "") {
             document.getElementById('data-attention').innerText = day.attention;
             attBox.style.display = "block";
         } else { attBox.style.display = "none"; }
 
+        // Блок OFM
         const ofmBox = document.getElementById('block-ofm');
         if (day && day.ofm && day.ofm.trim() !== "") {
             document.getElementById('data-ofm').innerText = day.ofm;
             ofmBox.style.display = "block";
         } else { ofmBox.style.display = "none"; }
 
-        const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a" };
+        // Кольори
+        const colors = { 
+            "зелений": "#2e7d32", 
+            "білий": "#d4af37", 
+            "червоний": "#b71c1c", 
+            "фіолетовий": "#6a1b9a", 
+            "рожевий": "#d81b60" 
+        };
         const activeColor = day ? (colors[day.color] || "#2e7d32") : "#2e7d32";
         document.documentElement.style.setProperty('--lit-color', activeColor);
     }
 
-    // Створюємо глобальну змінну для зберігання всіх даних
-let allCalendarData = [];
-
-function onSuccess(data) {
-    allCalendarData = data; // Зберігаємо завантажені дані в пам'ять
-    
-    // Показуємо сьогоднішній день при завантаженні (як і було раніше)
-    const today = new Date().toISOString().split('T')[0];
-    const currentDay = data.find(day => day.date === today) || data[0];
-    show(currentDay);
-}
-
-// Нова функція для вашої кнопки
-function goToDate(selectedDate) {
-    if (!selectedDate || allCalendarData.length === 0) return;
-
-    // Шукаємо день у нашому збереженому масиві
-    const foundDay = allCalendarData.find(day => day.date === selectedDate);
-
-    if (foundDay) {
-        show(foundDay); // Ваша стара функція відображення
-    } else {
-        alert("Запис для цієї дати не знайдено. Перевірте, чи заповнена таблиця.");
-    }
-}
+    // Запускаємо завантаження при відкритті сторінки
+    loadData();
 </script>
 </body>
 </html>
