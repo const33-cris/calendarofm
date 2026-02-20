@@ -34,33 +34,45 @@
 }
 .calendar-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    max-width: 400px;
-    margin: 15px auto;
+    grid-template-columns: repeat(7, 1fr); /* 7 однакових стовпчиків */
+    gap: 4px; /* Невеликий відступ між кнопками */
+    width: 100%; /* Розтягуємо на всю ширину картки */
+    box-sizing: border-box; /* Щоб відступи не вилазили за краї */
     background: #fff;
-    padding: 10px;
-    border-radius: 15px;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    padding: 10px 0; /* Відступи зверху і знизу, але не з боків */
+    margin: 15px 0;
 }
 
 .calendar-day {
-    padding: 10px 5px;
+    aspect-ratio: 1 / 1; /* Робимо кнопки ідеально квадратними */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: #fdf8f2;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 1em;
     font-weight: bold;
     color: var(--franciscan-brown);
     border: 1px solid #efe0d0;
     transition: 0.2s;
 }
 
-.calendar-day:hover { background: #efe0d0; }
+.day-name { 
+    font-size: 0.75em; 
+    color: #888; 
+    text-transform: uppercase; 
+    font-weight: bold;
+    padding-bottom: 8px;
+    text-align: center;
+}
+
+/* Виділення активного дня */
 .calendar-day.active { 
     background: var(--lit-color); 
     color: white; 
-    border-color: var(--lit-color); 
+    border-color: var(--lit-color);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .day-name { 
@@ -132,7 +144,8 @@
     <div class="calendar-nav">
     <label for="date-picker">🔍 Пошук за датою</label>
     <input type="date" id="date-picker" onchange="goToDate(this.value)">
-    <div id="calendar-grid" class="calendar-grid"></div>
+    <div class="card">
+        <div id="calendar-grid" class="calendar-grid"></div>
     </div>
     
     <div class="nav-buttons">
