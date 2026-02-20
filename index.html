@@ -303,7 +303,15 @@
         
         renderCalendar();
     }
-
+function toggleCalendar() {
+    const grid = document.getElementById('calendar-grid');
+    if (grid.style.display === "grid") {
+        grid.style.display = "none";
+    } else {
+        grid.style.display = "grid";
+        renderCalendar(); // Малюємо календар при відкритті
+    }
+}
     function renderCalendar() {
         const grid = document.getElementById('calendar-grid');
         grid.innerHTML = '';
