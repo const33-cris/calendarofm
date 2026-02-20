@@ -27,8 +27,16 @@
         #date-picker { border: 2px solid #efe0d0; border-radius: 10px; padding: 10px; font-size: 1em; color: var(--franciscan-brown); width: 100%; box-sizing: border-box; }
 
         .toggle-calendar-btn {
-            background: white; border: 1.5px solid var(--franciscan-brown); color: var(--franciscan-brown);
-            padding: 8px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: 0.3s;
+    background: white; 
+    border: 1.5px solid var(--franciscan-brown); 
+    color: var(--franciscan-brown);
+    padding: 10px 20px; /* Збільшено відступи */
+    border-radius: 12px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    font-size: 1.1em; /* Текст став більшим */
+    transition: 0.3s;
+    margin-top: 5px;
         }
 
         /* Сітка (захована за замовчуванням) */
@@ -133,9 +141,17 @@
     function goToDate(val) { if(val) { dt = new Date(val); updateUI(); } }
 
     function toggleCalendar() {
-        const grid = document.getElementById('calendar-grid');
-        grid.style.display = (grid.style.display === "grid") ? "none" : "grid";
-        if(grid.style.display === "grid") renderCalendar();
+    const grid = document.getElementById('calendar-grid');
+    const btn = document.querySelector('.toggle-calendar-btn');
+    
+    if (grid.style.display === "grid") {
+        grid.style.display = "none";
+        btn.innerText = "📅 Весь місяць"; // Повертаємо початковий текст
+    } else {
+        grid.style.display = "grid";
+        btn.innerText = "📅 Сховати місяць"; // Змінюємо текст на кнопці
+        renderCalendar();
+
     }
 
     function updateUI() {
