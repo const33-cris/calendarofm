@@ -11,181 +11,70 @@
             --bg-cream: #f4e7d7;
         }
         
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: var(--bg-cream); 
-            color: #4a302c; 
-            text-align: center; 
-            padding: 10px; 
-            margin: 0; 
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-cream); color: #4a302c; text-align: center; padding: 10px; margin: 0; }
         
         .card { 
-            background: white; 
-            border-radius: 25px; 
-            padding: 20px; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
-            max-width: 420px; 
-            margin: 10px auto; 
-            border-top: 10px solid var(--lit-color);
-            box-sizing: border-box;
+            background: white; border-radius: 25px; padding: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+            max-width: 420px; margin: 10px auto; border-top: 10px solid var(--lit-color); box-sizing: border-box;
         }
         
         .logo-img { width: 110px; height: auto; margin-bottom: 10px; border-radius: 10px; }
+        .province-title { font-weight: bold; color: var(--franciscan-brown); margin-bottom: 15px; text-transform: uppercase; font-size: 0.9em; line-height: 1.3; }
+
+        /* Пошук та кнопка місяця */
+        .calendar-nav { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .calendar-nav label { font-size: 0.75em; font-weight: bold; color: #888; text-transform: uppercase; }
+        #date-picker { border: 2px solid #efe0d0; border-radius: 10px; padding: 10px; font-size: 1em; color: var(--franciscan-brown); width: 100%; box-sizing: border-box; }
+
+        .toggle-calendar-btn {
+            background: white; border: 1.5px solid var(--franciscan-brown); color: var(--franciscan-brown);
+            padding: 8px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: 0.3s;
+        }
+
+        /* Сітка (захована за замовчуванням) */
+        .calendar-grid { display: none; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; margin: 10px 0; }
+        .calendar-day { padding: 10px 0; background: #fdf8f2; border-radius: 8px; cursor: pointer; font-size: 0.9em; font-weight: bold; color: var(--franciscan-brown); border: 1px solid #efe0d0; display: flex; align-items: center; justify-content: center; }
+        .calendar-day.active { background: var(--lit-color) !important; color: white !important; border-color: var(--lit-color); }
+        .day-name { font-size: 0.65em; color: #a1887f; text-transform: uppercase; font-weight: bold; text-align: center; }
+
+        /* Кнопки Навігації (← Сьогодні →) */
+        .nav-buttons { display: flex; justify-content: space-between; gap: 8px; margin: 15px 0; }
+        .nav-btn { background: var(--franciscan-brown); color: white; border: none; padding: 12px; border-radius: 15px; cursor: pointer; flex: 1; font-weight: bold; font-size: 1.1em; }
+        .btn-today { font-size: 0.9em; flex: 1.5; }
+
+        /* Блок дати */
+        .date-box { background: var(--lit-color); color: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; }
+        .date-side { font-size: 1em; opacity: 0.9; } 
+        .day-main { font-size: 1.4em; font-weight: bold; margin: 5px 0; } 
+        .period-bottom { font-size: 1.1em; font-weight: bold; }
+
+        /* Інфо-блоки */
+        .info-block { text-align: left; background: #fafafa; padding: 12px; border-radius: 12px; border-left: 5px solid var(--lit-color); margin-bottom: 10px; }
+        .block-label { font-size: 0.65em; font-weight: bold; color: #999; text-transform: uppercase; }
+        .block-text { font-size: 1.05em; line-height: 1.4; color: #2c1e1a; }
         
-        .province-title { 
-            font-weight: bold; 
-            color: var(--franciscan-brown); 
-            margin-bottom: 15px; 
-            text-transform: uppercase; 
-            font-size: 0.9em; 
-            line-height: 1.3; 
-        }
-
-        .calendar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-        
-        .calendar-nav label {
-            font-size: 0.75em;
-            font-weight: bold;
-            color: #888;
-            text-transform: uppercase;
-        }
-
-        #date-picker {
-            border: 2px solid #efe0d0;
-            border-radius: 10px;
-            padding: 8px;
-            font-size: 1em;
-            color: var(--franciscan-brown);
-            outline: none;
-            background: #fafafa;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .calendar-grid {
-    display: none; /* Календар заховано за замовчуванням */
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    width: 100%;
-    margin: 15px 0;
-    box-sizing: border-box;
-}
-
-/* Додамо стиль для нової кнопки */
-.toggle-calendar-btn {
-    background: none;
-    border: 1px solid var(--franciscan-brown);
-    color: var(--franciscan-brown);
-    padding: 8px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.85em;
-    font-weight: bold;
-    margin-top: 10px;
-    transition: 0.3s;
-}
-.toggle-calendar-btn:active { background: #efe0d0; }
-
-        .calendar-day {
-            padding: 10px 0;
-            background: #fdf8f2;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: bold;
-            color: var(--franciscan-brown);
-            border: 1px solid #efe0d0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-
-        .calendar-day.active { 
-            background: var(--lit-color) !important; 
-            color: white !important; 
-            border-color: var(--lit-color);
-        }
-
-        .day-name { 
-            font-size: 0.65em; 
-            color: #a1887f; 
-            text-transform: uppercase; 
-            font-weight: bold;
-            padding-bottom: 5px;
-            text-align: center;
-        }
-
-        .nav-buttons { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 20px; }
-        .nav-btn { 
-            background: var(--franciscan-brown); 
-            color: white; 
-            border: none; 
-            padding: 12px 5px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            flex: 1; 
-            font-weight: bold; 
-            font-size: 1.1em;
-        }
-        .btn-today { font-size: 0.85em; flex: 1.5; }
-
-        .date-box { 
-            background: var(--lit-color); 
-            color: white; 
-            padding: 15px; 
-            border-radius: 18px; 
-            margin-bottom: 15px; 
-            transition: background 0.3s; 
-        }
-        .date-side { font-size: 0.95em; opacity: 0.9; text-transform: lowercase; } 
-        .day-main { font-size: 1.3em; font-weight: bold; margin: 5px 0; line-height: 1.2; } 
-        .period-bottom { font-size: 1em; font-weight: bold; opacity: 0.9; }
-
-        .info-block { 
-            text-align: left; 
-            background: #fafafa; 
-            padding: 12px; 
-            border-radius: 12px; 
-            border-left: 5px solid var(--lit-color); 
-            margin-bottom: 10px; 
-        }
-        .block-label { font-size: 0.65em; font-weight: bold; color: #999; text-transform: uppercase; margin-bottom: 3px; }
-        .block-text { font-size: 1em; line-height: 1.4; color: #2c1e1a; }
-
-        .ofm-section { background: #fff3e0; border-left-color: #ef6c00; }
-        .ofm-label { color: #e65100; }
-        
-        .footer { margin-top: 15px; font-size: 0.9em; font-weight: bold; color: var(--franciscan-brown); opacity: 0.6; }
+        .footer { margin-top: 15px; font-weight: bold; color: var(--franciscan-brown); opacity: 0.6; }
     </style>
 </head>
 <body>
 
 <div class="card">
     <img src="SMichaele.gif" alt="Лого" class="logo-img">
-    <div class="province-title">Літургійний Календар<br>Провінції св. Архангела Михаїла</div>
+    <div class="province-title">Літургійний Календар Провінції св. Архангела Михаїла</div>
     
     <div class="calendar-nav">
-        <label for="date-picker">🔍 Пошук за датою</label>
+        <label for="date-picker">🔍 Перейти до дати:</label>
         <input type="date" id="date-picker" onchange="goToDate(this.value)">
+        <button class="toggle-calendar-btn" onclick="toggleCalendar()">📅 Весь місяць</button>
     </div>
 
     <div id="calendar-grid" class="calendar-grid"></div>
     
-    <div class="calendar-nav">
-    <label for="date-picker">🔍 Пошук за датою</label>
-    <input type="date" id="date-picker" onchange="goToDate(this.value)">
-    
-    <button class="toggle-calendar-btn" onclick="toggleCalendar()">📅 Весь місяць</button>
-</div>
-
-<div id="calendar-grid" class="calendar-grid"></div>
+    <div class="nav-buttons">
+        <button class="nav-btn" onclick="changeDate(-1)">←</button>
+        <button class="nav-btn btn-today" onclick="resetDate()">Сьогодні</button>
+        <button class="nav-btn" onclick="changeDate(1)">→</button>
+    </div>
 
     <div id="lit-bg" class="date-box">
         <div id="display-date-top" class="date-side">...</div>
@@ -205,14 +94,6 @@
         <div class="info-block">
             <div class="block-label">Читання</div>
             <div id="data-readings" class="block-text" style="color: #1a237e; font-weight: 500;">...</div>
-        </div>
-        <div id="block-attention" class="info-block" style="display:none;">
-            <div class="block-label">Увага</div>
-            <div id="data-attention" class="block-text">...</div>
-        </div>
-        <div id="block-ofm" class="info-block ofm-section" style="display:none;">
-            <div class="block-label ofm-label">Родина OFM</div>
-            <div id="data-ofm" class="block-text">...</div>
         </div>
     </div>
     
@@ -235,115 +116,61 @@
                     const key = row[0].trim().replace(/"/g, "");
                     calendarData[key] = {
                         title: (row[1] || "").replace(/"/g, ""),
-                        period: (row[2] || "Звичайний період").replace(/"/g, ""),
+                        period: (row[2] || "").replace(/"/g, ""),
                         color: (row[3] || "зелений").replace(/"/g, "").trim().toLowerCase(),
                         mass: (row[4] || "").replace(/"/g, ""),
                         lh: (row[5] || "").replace(/"/g, ""),
-                        readings: (row[6] || "").replace(/"/g, ""),
-                        attention: (row[7] || "").replace(/"/g, ""),
-                        ofm: (row[8] || "").replace(/"/g, "")
+                        readings: (row[6] || "").replace(/"/g, "")
                     };
                 }
             }
             updateUI();
-        } catch (e) { console.error("Помилка завантаження:", e); }
+        } catch (e) { console.error(e); }
     }
 
-    function changeDate(days) {
-        dt.setDate(dt.getDate() + days);
-        updateUI();
-    }
+    function changeDate(days) { dt.setDate(dt.getDate() + days); updateUI(); }
+    function resetDate() { dt = new Date(); updateUI(); }
+    function goToDate(val) { if(val) { dt = new Date(val); updateUI(); } }
 
-    function resetDate() {
-        dt = new Date();
-        updateUI();
-    }
-
-    function goToDate(selectedDate) {
-        if (!selectedDate) return;
-        dt = new Date(selectedDate);
-        updateUI();
+    function toggleCalendar() {
+        const grid = document.getElementById('calendar-grid');
+        grid.style.display = (grid.style.display === "grid") ? "none" : "grid";
+        if(grid.style.display === "grid") renderCalendar();
     }
 
     function updateUI() {
-        const y = dt.getFullYear();
-        const m = String(dt.getMonth() + 1).padStart(2, '0');
-        const d = String(dt.getDate()).padStart(2, '0');
-        const k = `${y}-${m}-${d}`;
-
-        const dateStr = dt.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
-        document.getElementById('display-date-top').innerText = dateStr;
-
+        const k = dt.toISOString().split('T')[0];
         const day = calendarData[k];
         
+        document.getElementById('display-date-top').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
         document.getElementById('display-day-title').innerHTML = day ? day.title.replace(/;/g, ';<br>') : "День звичайний";
         document.getElementById('display-period').innerText = day ? day.period : "";
         document.getElementById('data-mass').innerText = day ? day.mass : "Згідно з календарем";
         document.getElementById('data-lh').innerText = day ? day.lh : "-";
         document.getElementById('data-readings').innerHTML = day ? day.readings.replace(/;/g, ';<br>') : "-";
 
-        const attBox = document.getElementById('block-attention');
-        if (day && day.attention && day.attention.trim() !== "") {
-            document.getElementById('data-attention').innerText = day.attention;
-            attBox.style.display = "block";
-        } else { attBox.style.display = "none"; }
-
-        const ofmBox = document.getElementById('block-ofm');
-        if (day && day.ofm && day.ofm.trim() !== "") {
-            document.getElementById('data-ofm').innerText = day.ofm;
-            ofmBox.style.display = "block";
-        } else { ofmBox.style.display = "none"; }
-
-        const colors = { 
-            "зелений": "#2e7d32", "білий": "#d4af37", 
-            "червоний": "#b71c1c", "фіолетовий": "#6a1b9a", "рожевий": "#d81b60" 
-        };
-        const activeColor = day ? (colors[day.color] || "#2e7d32") : "#2e7d32";
-        document.documentElement.style.setProperty('--lit-color', activeColor);
+        const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a", "рожевий": "#d81b60" };
+        document.documentElement.style.setProperty('--lit-color', day ? (colors[day.color] || "#2e7d32") : "#2e7d32");
         
         renderCalendar();
     }
-function toggleCalendar() {
-    const grid = document.getElementById('calendar-grid');
-    if (grid.style.display === "grid") {
-        grid.style.display = "none";
-    } else {
-        grid.style.display = "grid";
-        renderCalendar(); // Малюємо календар при відкритті
-    }
-}
+
     function renderCalendar() {
         const grid = document.getElementById('calendar-grid');
         grid.innerHTML = '';
-        const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
-        dayNames.forEach(name => {
-            const el = document.createElement('div');
-            el.className = 'day-name';
-            el.innerText = name;
-            grid.appendChild(el);
+        ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'].forEach(n => {
+            const d = document.createElement('div'); d.className='day-name'; d.innerText=n; grid.appendChild(d);
         });
-
-        const firstDay = new Date(dt.getFullYear(), dt.getMonth(), 1);
-        const lastDay = new Date(dt.getFullYear(), dt.getMonth() + 1, 0);
-        let startOffset = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-        
-        for (let i = 0; i < startOffset; i++) {
-            grid.appendChild(document.createElement('div'));
-        }
-
-        for (let i = 1; i <= lastDay.getDate(); i++) {
-            const dayBtn = document.createElement('div');
-            dayBtn.className = 'calendar-day';
-            if (i === dt.getDate()) dayBtn.classList.add('active');
-            dayBtn.innerText = i;
-            dayBtn.onclick = () => {
-                dt.setDate(i);
-                updateUI();
-            };
-            grid.appendChild(dayBtn);
+        const f = new Date(dt.getFullYear(), dt.getMonth(), 1);
+        const l = new Date(dt.getFullYear(), dt.getMonth() + 1, 0);
+        let off = f.getDay() === 0 ? 6 : f.getDay() - 1;
+        for (let i = 0; i < off; i++) grid.appendChild(document.createElement('div'));
+        for (let i = 1; i <= l.getDate(); i++) {
+            const b = document.createElement('div'); b.className = 'calendar-day' + (i === dt.getDate() ? ' active' : '');
+            b.innerText = i; b.onclick = () => { dt.setDate(i); updateUI(); };
+            grid.appendChild(b);
         }
     }
-
     loadData();
 </script>
 </body>
