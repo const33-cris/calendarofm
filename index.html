@@ -162,20 +162,25 @@
         document.documentElement.style.setProperty('--lit-color', activeColor);
     }
 
-    function changeDate(n) { dt.setDate(dt.getDate() + n); show(); }
-    function resetDate() { dt = new Date(); show(); }
-    loadData();
     function goToDate(selectedDate) {
     if (!selectedDate) return;
-    
-    // Шукаємо в даних таблиці рядок з цією датою
-    // Припускаємо, що ваші дані збережені у масиві 'allDaysData'
-    const day = allDaysData.find(d => d.date === selectedDate);
-    
-    if (day) {
-        show(day); // Викликаємо вашу функцію відображення
+
+    // 1. Отримуємо всі дані, які вже завантажені з таблиці
+    // Припустимо, вони зберігаються у масиві 'data' (як ми робили раніше)
+    const allDays = data; 
+
+    // 2. Шукаємо потрібний день
+    // Важливо: формат дати в календарі (input) зазвичай YYYY-MM-DD
+    const foundDay = allDays.find(day => {
+        // Якщо в таблиці дата у форматі об'єкта або рядка, порівнюємо їх
+        return day.date === selectedDate;
+    });
+
+    // 3. Якщо день знайдено — відображаємо його
+    if (foundDay) {
+        show(foundDay); // Викликаємо вашу функцію відображення
     } else {
-        alert("Дані для цієї дати ще не завантажені в таблицю.");
+        alert("Запис для дати " + selectedDate + " не знайдено у вашій таблиці.");
     }
 }
 </script>
