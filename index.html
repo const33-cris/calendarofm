@@ -32,7 +32,43 @@
     font-size: 0.85em;
     letter-spacing: 1px;
 }
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    max-width: 400px;
+    margin: 15px auto;
+    background: #fff;
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+}
 
+.calendar-day {
+    padding: 10px 5px;
+    background: #fdf8f2;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--franciscan-brown);
+    border: 1px solid #efe0d0;
+    transition: 0.2s;
+}
+
+.calendar-day:hover { background: #efe0d0; }
+.calendar-day.active { 
+    background: var(--lit-color); 
+    color: white; 
+    border-color: var(--lit-color); 
+}
+
+.day-name { 
+    font-size: 0.7em; 
+    color: #888; 
+    text-transform: uppercase; 
+    padding-bottom: 5px; 
+}
 #date-picker {
     background: white;
     border: 2px solid var(--franciscan-brown);
@@ -96,6 +132,7 @@
     <div class="calendar-nav">
     <label for="date-picker">🔍 Пошук за датою</label>
     <input type="date" id="date-picker" onchange="goToDate(this.value)">
+    <div id="calendar-grid" class="calendar-grid"></div>
     </div>
     
     <div class="nav-buttons">
@@ -229,10 +266,46 @@
         };
         const activeColor = day ? (colors[day.color] || "#2e7d32") : "#2e7d32";
         document.documentElement.style.setProperty('--lit-color', activeColor);
+        renderCalendar();
     }
 
     // Запускаємо завантаження при відкритті сторінки
     loadData();
+    function renderCalendar() {
+    const grid = document.getElementById('calendar-grid');
+    grid.innerHTML = ''; // Очищуємо перед малюванням
+    
+    // Назви днів тижня
+    const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
+    dayNames.forEach(name => {
+        const el = document.createElement('div');
+        el.className = 'day-name';
+        el.innerText = name;
+        grid.appendChild(el);
+    });
+
+    // Логіка створення днів поточного місяця
+    const firstDay = new Date(dt.getFullYear(), dt.getMonth(), 1);
+    const lastDay = new Date(dt.getFullYear(), dt.getMonth() + 1, 0);
+    
+    // Додаємо порожні клітинки, якщо місяць починається не з понеділка
+    let startOffset = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+    for (let i = 0; i < startOffset; i++) {
+        grid.appendChild(document.createElement('div'));
+    }
+
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+        const dayBtn = document.createElement('div');
+        dayBtn.className = 'calendar-day';
+        if (i === dt.getDate()) dayBtn.className += ' active';
+        dayBtn.innerText = i;
+        dayBtn.onclick = () => {
+            dt.setDate(i);
+            updateUI();
+        };
+        grid.appendChild(dayBtn);
+    }
+}
 </script>
 </body>
 </html>
