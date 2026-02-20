@@ -162,6 +162,7 @@
         const k = `${y}-${m}-${d}`;
         const day = calendarData[k];
         
+        document.getElementById('date-picker').value = k;
         document.getElementById('display-date-top').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
         document.getElementById('display-day-title').innerHTML = day ? day.title.replace(/;/g, ';<br>') : "День звичайний";
         document.getElementById('display-period').innerText = day ? day.period : "";
