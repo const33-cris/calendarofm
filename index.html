@@ -162,25 +162,29 @@
         document.documentElement.style.setProperty('--lit-color', activeColor);
     }
 
-    function goToDate(selectedDate) {
-    if (!selectedDate) return;
+    // Створюємо глобальну змінну для зберігання всіх даних
+let allCalendarData = [];
 
-    // 1. Отримуємо всі дані, які вже завантажені з таблиці
-    // Припустимо, вони зберігаються у масиві 'data' (як ми робили раніше)
-    const allDays = data; 
+function onSuccess(data) {
+    allCalendarData = data; // Зберігаємо завантажені дані в пам'ять
+    
+    // Показуємо сьогоднішній день при завантаженні (як і було раніше)
+    const today = new Date().toISOString().split('T')[0];
+    const currentDay = data.find(day => day.date === today) || data[0];
+    show(currentDay);
+}
 
-    // 2. Шукаємо потрібний день
-    // Важливо: формат дати в календарі (input) зазвичай YYYY-MM-DD
-    const foundDay = allDays.find(day => {
-        // Якщо в таблиці дата у форматі об'єкта або рядка, порівнюємо їх
-        return day.date === selectedDate;
-    });
+// Нова функція для вашої кнопки
+function goToDate(selectedDate) {
+    if (!selectedDate || allCalendarData.length === 0) return;
 
-    // 3. Якщо день знайдено — відображаємо його
+    // Шукаємо день у нашому збереженому масиві
+    const foundDay = allCalendarData.find(day => day.date === selectedDate);
+
     if (foundDay) {
-        show(foundDay); // Викликаємо вашу функцію відображення
+        show(foundDay); // Ваша стара функція відображення
     } else {
-        alert("Запис для дати " + selectedDate + " не знайдено у вашій таблиці.");
+        alert("Запис для цієї дати не знайдено. Перевірте, чи заповнена таблиця.");
     }
 }
 </script>
