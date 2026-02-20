@@ -15,7 +15,43 @@
         
         .logo-img { width: 130px; height: auto; margin-bottom: 10px; border-radius: 10px; }
         .province-title { font-weight: bold; color: var(--franciscan-brown); margin-bottom: 20px; text-transform: uppercase; font-size: 1em; line-height: 1.4; }
+        
+        /* Стилізація блоку вибору дати */
+.calendar-nav {
+    margin: 15px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
 
+.calendar-nav label {
+    font-weight: bold;
+    color: var(--franciscan-brown);
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 1px;
+}
+
+#date-picker {
+    background: white;
+    border: 2px solid var(--franciscan-brown);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 1.2em; /* Робимо текст та поле більшим */
+    color: var(--franciscan-brown);
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+    width: 80%; /* Щоб зручно було натискати пальцем */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Прибираємо стандартну іконку в деяких браузерах, щоб було чистіше */
+#date-picker::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: sepia(100%) saturate(200%) brightness(50%) hue-rotate(330deg); /* Робимо іконку коричневою */
+}
         /* КНОПКИ: Збільшено розмір та шрифт */
         .nav-buttons { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 25px; }
         .nav-btn { 
@@ -58,8 +94,8 @@
     <div class="province-title">Літургійний Календар<br>Провінції св. Архангела Михаїла</div>
     
     <div class="calendar-nav">
-        <label for="date-picker">Перейти до дати:</label>
-        <input type="date" id="date-picker" onchange="goToDate(this.value)">
+    <label for="date-picker">🔍 Пошук за датою</label>
+    <input type="date" id="date-picker" onchange="goToDate(this.value)">
     </div>
     
     <div class="nav-buttons">
