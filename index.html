@@ -3,198 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Літургійний Календар</title>
+    <title>Літургійний Календар 2026</title>
     <style>
         :root {
             --franciscan-brown: #5d4037;
+            --lit-green: #2e7d32;
+            --lit-red: #c62828;
+            --lit-violet: #7b1fa2;
+            --lit-white: #d1d1d1; /* Світло-сірий для рамок білого кольору */
         }
 
-        body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            background-color: #f4f1ea; 
-            display: flex; 
-            justify-content: center; 
-            padding: 20px; 
-            margin: 0; 
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f1ea; display: flex; justify-content: center; padding: 20px; }
 
-        .card { 
-            background: white; 
-            width: 100%; 
-            max-width: 420px; 
-            border-radius: 35px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            padding: 30px; 
-            text-align: center; 
-            box-sizing: border-box;
-        }
+        .card { background: white; width: 100%; max-width: 420px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 25px; text-align: center; box-sizing: border-box; }
 
         .province-title { 
             font-weight: bold; 
             color: var(--franciscan-brown); 
-            margin-bottom: 5px; 
+            margin-bottom: 15px; 
             text-transform: uppercase; 
-            font-size: 0.95em; 
+            font-size: 1em; /* Регульований розмір шрифту */
             line-height: 1.3; 
         }
 
-        /* Рухомі свята - темно-сині, без підкреслення */
         .movable-feasts-link { 
             font-size: 0.85em; 
             font-weight: bold; 
-            color: #1a237e; 
+            color: #1a237e; /* Темно-синій */
             text-transform: uppercase; 
             cursor: pointer; 
-            text-decoration: none; 
-            display: inline-block; 
-            margin: 15px 0;
+            text-decoration: none; /* Без підкреслення */
+            margin-bottom: 15px; 
+            display: inline-block;
         }
 
-        .month-btn { 
-            background-color: var(--franciscan-brown); 
-            color: white; 
-            border: none; 
-            padding: 12px 30px; 
-            border-radius: 25px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            font-size: 0.9em; 
-            text-transform: uppercase;
-            margin-top: 10px;
-        }
-
-        /* Контейнер сітки (спочатку прихований) */
-        #calendar-container { 
-            display: none; 
-            margin-top: 25px; 
-        }
-
-        .calendar-grid { 
-            display: grid; 
-            grid-template-columns: repeat(7, 1fr); 
-            gap: 8px; 
-        }
+        /* Стилі для сітки календаря */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 20px; }
         
-        .day-name { 
-            font-size: 0.7em; 
-            font-weight: bold; 
-            color: #999; 
-            text-transform: uppercase; 
-            margin-bottom: 5px; 
-        }
+        .day-name { font-size: 0.7em; font-weight: bold; color: #999; text-transform: uppercase; padding-bottom: 5px; }
 
         .calendar-day { 
             aspect-ratio: 1/1; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            font-weight: bold; 
+            font-weight: 600; 
             border-radius: 12px; 
-            background: #fff; 
-            border: 1px solid #eee; 
-            font-size: 1em;
+            cursor: pointer; 
+            font-size: 0.9em;
+            background: #fff;
+            transition: transform 0.1s;
+            border: 2px solid #eee; /* Дефолтна рамка */
         }
+
+        /* Кольорові рамки літургійних кольорів */
+        .border-green { border: 2.5px solid var(--lit-green) !important; }
+        .border-red { border: 2.5px solid var(--lit-red) !important; }
+        .border-violet { border: 2.5px solid var(--lit-violet) !important; }
+        .border-white { border: 2.5px solid var(--lit-white) !important; }
+
+        .calendar-day:active { transform: scale(0.95); }
+        .today { background: var(--franciscan-brown) !important; color: white !important; border-color: var(--franciscan-brown) !important; }
 
         /* Модальне вікно */
-        .modal-overlay { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.6); 
-            z-index: 2000; 
-            align-items: center; 
-            justify-content: center; 
-        }
-        
-        .modal-content { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 30px; 
-            max-width: 380px; 
-            width: 85%; 
-            text-align: left; 
-            box-sizing: border-box;
-        }
-
-        .modal-btn { 
-            background: var(--franciscan-brown); 
-            color: white; 
-            border: none; 
-            width: 100%; 
-            padding: 18px; 
-            border-radius: 15px; 
-            font-weight: bold; 
-            font-size: 1.2em; 
-            cursor: pointer; 
-            margin-top: 20px; 
-        }
-    </style>
-</head>
-<body>
-
-<div class="card">
-    <div class="province-title">Літургійний Календар<br>Провінції св. Архангела Михаїла</div>
-    
-    <div class="movable-feasts-link" onclick="toggleModal()">Рухомі свята 2026</div>
-
-    <button class="month-btn" id="toggle-btn" onclick="toggleCalendar()">Весь місяць</button>
-
-    <div id="calendar-container">
-        <div style="font-weight: bold; margin-bottom: 15px;">Квітень 2026</div>
-        <div class="calendar-grid" id="calendar-grid">
-            <div class="day-name">Пн</div><div class="day-name">Вт</div><div class="day-name">Ср</div>
-            <div class="day-name">Чт</div><div class="day-name">Пт</div><div class="day-name">Сб</div>
-            <div class="day-name">Нд</div>
-        </div>
-    </div>
-</div>
-
-<div class="modal-overlay" id="modal-overlay" onclick="if(event.target === this) toggleModal()">
-    <div class="modal-content">
-        <h3 style="margin-top:0; color: var(--franciscan-brown); text-align: center;">Рухомі свята 2026</h3>
-        <p>• 18 лютого — Попільна середа</p>
-        <p>• 5 квітня — Воскресіння Господнє</p>
-        <p>• 14 травня — Вознесіння Господнє</p>
-        <p>• 24 травня — Зіслання Св. Духа</p>
-        <p>• 4 червня — Тіла і Крові Христа</p>
-        <button class="modal-btn" onclick="toggleModal()">Гаразд</button>
-    </div>
-</div>
-
-<script>
-    function toggleModal() {
-        const modal = document.getElementById('modal-overlay');
-        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    function toggleCalendar() {
-        const container = document.getElementById('calendar-container');
-        const btn = document.getElementById('toggle-btn');
-        if (container.style.display === 'none' || container.style.display === '') {
-            container.style.display = 'block';
-            btn.style.display = 'none'; // Кнопка зникає після відкриття сітки
-        }
-    }
-
-    function renderCalendar() {
-        const grid = document.getElementById('calendar-grid');
-        const startOffset = 2; // Квітень поч. з середи
-        const days = 30;
-
-        // Порожні клітинки для відступу
-        for(let i=0; i<startOffset; i++) {
-            grid.innerHTML += '<div></div>';
-        }
-
-        // Дні місяця
-        for(let d=1; d<=days; d++) {
-            grid.innerHTML += `<div class="calendar-day">${d}</div>`;
-        }
-    }
-
-    renderCalendar();
-</script>
-
-</body>
-</html>
