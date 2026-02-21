@@ -88,10 +88,26 @@
         
         /* МОДАЛЬНЕ ВІКНО */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-content { background: white; padding: 25px; border-radius: 25px; max-width: 400px; width: 100%; text-align: left; }
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); 
+    z-index: 2000; 
+    align-items: center;     /* Центрує вертикально */
+    justify-content: center; /* Центрує горизонтально */
+    padding: 20px;
+}
+        .modal-content { 
+    background: white; 
+    padding: 25px; 
+    border-radius: 25px; 
+    max-width: 420px; /* ТАКА Ж ШИРИНА ЯК У КАЛЕНДАРЯ */
+    width: 90%;       /* Відступ від країв на дуже малих екранах */
+    box-sizing: border-box; /* Щоб внутрішні відступи не роздували ширину */
+    text-align: left; 
+    position: relative;
+}
         .modal-title { font-weight: bold; color: var(--franciscan-brown); font-size: 1.2em; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #efe0d0; padding-bottom: 10px; }
         .modal-list { line-height: 1.8; font-size: 1em; margin-bottom: 20px; }
         .easter-text { color: var(--easter-red); font-weight: bold; } /* ЧЕРВОНИЙ ВЕЛИКДЕНЬ */
