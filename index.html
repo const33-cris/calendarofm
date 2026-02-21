@@ -9,6 +9,7 @@
             --lit-color: #2e7d32; 
             --franciscan-brown: #6F4E37; 
             --bg-cream: #f4e7d7;
+            --easter-red: #b71c1c;
         }
         
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-cream); color: #4a302c; text-align: center; padding: 10px; margin: 0; }
@@ -21,15 +22,45 @@
         .logo-img { width: 110px; height: auto; margin-bottom: 10px; border-radius: 10px; }
         .province-title { font-weight: bold; color: var(--franciscan-brown); margin-bottom: 15px; text-transform: uppercase; font-size: 0.9em; line-height: 1.3; }
 
+        /* Напис Рухомі свята (без іконки) */
         .movable-feasts-link { 
             font-size: 0.85em; font-weight: bold; color: var(--franciscan-brown); 
             text-transform: uppercase; cursor: pointer; text-decoration: underline; 
-            margin-bottom: 10px; transition: 0.3s; display: inline-block;
+            margin-bottom: 12px; transition: 0.3s; display: inline-block;
+        }
+
+        /* Стилізація поля вибору дати */
+        .date-input-wrapper {
+            position: relative;
+            width: 100%;
+            margin-top: 5px;
+            overflow: hidden;
         }
 
         #date-picker { 
             border: 2px solid #efe0d0; border-radius: 12px; padding: 12px; font-size: 1.1em; 
-            color: var(--franciscan-brown); width: 100%; box-sizing: border-box; outline: none; margin-top: 5px;
+            color: var(--franciscan-brown); width: 100%; box-sizing: border-box; outline: none;
+            cursor: pointer; background: white; font-family: inherit;
+            -webkit-appearance: none; appearance: none;
+        }
+
+        /* Нова іконка календаря */
+        .date-input-wrapper::after {
+            content: '📅'; 
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 1.2em;
+            z-index: 2;
+        }
+
+        /* Приховуємо системну іконку */
+        #date-picker::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0; color: transparent; cursor: pointer; height: auto;
+            left: 0; position: absolute; right: 0; top: 0; width: auto; z-index: 1;
         }
 
         .toggle-calendar-btn {
@@ -51,7 +82,7 @@
         .nav-btn { background: var(--franciscan-brown); color: white; border: none; padding: 15px; border-radius: 15px; cursor: pointer; flex: 1; font-weight: bold; font-size: 1.2em; }
         .btn-today { font-size: 1em; flex: 1.5; }
 
-        .date-box { background: var(--lit-color); color: white; padding: 20px; border-radius: 22px; margin-bottom: 15px; min-height: 100px; }
+        .date-box { background: var(--lit-color); color: white; padding: 20px; border-radius: 22px; margin-bottom: 15px; min-height: 100px; transition: 0.3s; }
         .date-side { font-size: 1.05em; opacity: 0.9; } 
         .day-main { font-size: 1.4em; font-weight: bold; margin: 8px 0; } 
         .period-bottom { font-size: 1.1em; font-weight: bold; }
@@ -71,6 +102,7 @@
         }
         .modal-title { font-weight: bold; color: var(--franciscan-brown); font-size: 1.3em; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #efe0d0; padding-bottom: 10px; }
         .modal-list { line-height: 1.8; font-size: 1em; color: #333; margin-bottom: 20px; }
+        .easter-highlight { color: var(--easter-red); font-weight: bold; text-transform: uppercase; }
         .modal-btn {
             background: var(--franciscan-brown); color: white; border: none; width: 100%; padding: 15px;
             border-radius: 15px; font-weight: bold; font-size: 1.1em; cursor: pointer;
@@ -87,13 +119,13 @@
         <div class="modal-list">
             • <b>18 лютого</b> — Попільна середа<br>
             • <b>29 березня</b> — Пальмова неділя<br>
-            • <b>5 квітня</b> — <b>ВОСКРЕСІННЯ ГОСПОДНЄ</b><br>
+            • <b>5 квітня</b> — <span class="easter-highlight">Воскресіння Господнє</span><br>
             • <b>14 травня</b> — Вознесіння Господнє<br>
             • <b>24 травня</b> — Зіслання Св. Духа<br>
             • <b>31 травня</b> — Пресвятої Трійці<br>
             • <b>4 червня</b> — Тіла і Крові Христа<br>
             • <b>22 листопада</b> — Христа Царя<br>
-            • <b>29 листопада</b> — <b>Початок Адвенту</b>
+            • <b>29 листопада</b> — <b>Адвент</b>
         </div>
         <button class="modal-btn" onclick="closeModal()">Гаразд</button>
     </div>
@@ -104,14 +136,12 @@
     <div class="province-title">Літургійний Календар Провінції св. Архангела Михаїла</div>
     
     <div class="calendar-nav">
-    <div class="movable-feasts-link" onclick="openModal()">📅 РУХОМІ СВЯТА 2026</div>
-    
-    <div class="date-input-wrapper">
-        <input type="date" id="date-picker" onchange="goToDate(this.value)">
+        <div class="movable-feasts-link" onclick="openModal()">РУХОМІ СВЯТА 2026</div>
+        <div class="date-input-wrapper">
+            <input type="date" id="date-picker" onchange="goToDate(this.value)">
+        </div>
+        <button id="main-toggle-btn" class="toggle-calendar-btn" onclick="toggleCalendar()">Весь місяць</button>
     </div>
-    
-    <button id="main-toggle-btn" class="toggle-calendar-btn" onclick="toggleCalendar()">Весь місяць</button>
-</div>
 
     <div id="calendar-grid" class="calendar-grid"></div>
     
@@ -155,7 +185,6 @@
 
     async function loadData() {
         try {
-            // Додаємо випадкове число до URL, щоб обійти кеш браузера
             const response = await fetch(CSV_URL + '&cache=' + Math.random());
             const text = await response.text();
             const lines = text.split(/\r?\n/);
@@ -175,10 +204,7 @@
                 }
             }
             updateUI();
-        } catch (e) { 
-            console.error("Помилка завантаження:", e);
-            document.getElementById('display-date-top').innerText = "Помилка зв'язку з таблицею";
-        }
+        } catch (e) { console.error(e); }
     }
 
     function changeDate(days) { dt.setDate(dt.getDate() + days); updateUI(); }
@@ -209,42 +235,4 @@
         document.getElementById('display-date-top').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
         
         if (day) {
-            document.getElementById('display-day-title').innerHTML = day.title.replace(/;/g, ';<br>');
-            document.getElementById('display-period').innerText = day.period;
-            document.getElementById('data-mass').innerText = day.mass || "Згідно з календарем";
-            document.getElementById('data-lh').innerText = day.lh || "-";
-            document.getElementById('data-readings').innerHTML = day.readings.replace(/;/g, ';<br>');
-            
-            const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a", "рожевий": "#d81b60" };
-            const activeColor = colors[day.color] || "#2e7d32";
-            document.getElementById('lit-bg').style.background = activeColor;
-            document.documentElement.style.setProperty('--lit-color', activeColor);
-        } else {
-            document.getElementById('display-day-title').innerText = "Дані відсутні";
-            document.getElementById('display-period').innerText = "";
-            document.getElementById('data-mass').innerText = "...";
-            document.getElementById('lit-bg').style.background = "#2e7d32";
-        }
-        renderCalendar();
-    }
-
-    function renderCalendar() {
-        const grid = document.getElementById('calendar-grid');
-        grid.innerHTML = '';
-        ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'].forEach(n => {
-            const d = document.createElement('div'); d.className='day-name'; d.innerText=n; grid.appendChild(d);
-        });
-        const f = new Date(dt.getFullYear(), dt.getMonth(), 1);
-        const l = new Date(dt.getFullYear(), dt.getMonth() + 1, 0);
-        let off = f.getDay() === 0 ? 6 : f.getDay() - 1;
-        for (let i = 0; i < off; i++) grid.appendChild(document.createElement('div'));
-        for (let i = 1; i <= l.getDate(); i++) {
-            const b = document.createElement('div'); b.className = 'calendar-day' + (i === dt.getDate() ? ' active' : '');
-            b.innerText = i; b.onclick = () => { dt.setDate(i); updateUI(); };
-            grid.appendChild(b);
-        }
-    }
-    loadData();
-</script>
-</body>
-</html>
+            document.getElementById
