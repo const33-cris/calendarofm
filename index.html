@@ -3,31 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Літургійний Календар Провінції</title>
+    <title>Літургійний Календар 2026</title>
     <style>
         :root {
             --franciscan-brown: #5d4037;
             --lit-green: #2e7d32;
             --lit-red: #c62828;
             --lit-violet: #7b1fa2;
-            --lit-white: #d1d1d1; /* Рамка для білого кольору */
+            --lit-white: #d1d1d1; /* Світло-сіра рамка для білого кольору */
         }
 
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f1ea; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f1ea; 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+            margin: 0;
+        }
 
-        .card { background: white; width: 100%; max-width: 420px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 25px; text-align: center; box-sizing: border-box; }
+        .card { 
+            background: white; 
+            width: 100%; 
+            max-width: 420px; 
+            border-radius: 30px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            padding: 25px; 
+            text-align: center; 
+            box-sizing: border-box; 
+        }
 
-        /* Заголовок у два рядки */
+        /* Назва Провінції */
         .province-title { 
             font-weight: bold; 
             color: var(--franciscan-brown); 
             margin-bottom: 15px; 
             text-transform: uppercase; 
-            font-size: 0.95em; 
+            font-size: 1em; 
             line-height: 1.3; 
         }
 
-        /* Рухомі свята: темно-сині, без підкреслення */
+        /* Рухомі свята - темно-сині, без підкреслення */
         .movable-feasts-link { 
             font-size: 0.85em; 
             font-weight: bold; 
@@ -39,11 +55,22 @@
             display: inline-block;
         }
 
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 10px; }
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 8px; 
+            margin-top: 15px; 
+        }
         
-        .day-name { font-size: 0.7em; font-weight: bold; color: #999; text-transform: uppercase; padding-bottom: 5px; }
+        .day-name { 
+            font-size: 0.7em; 
+            font-weight: bold; 
+            color: #999; 
+            text-transform: uppercase; 
+            padding-bottom: 5px; 
+        }
 
-        /* Стиль комірки дня з кольоровою рамкою */
+        /* Комірка дня з базовою рамкою */
         .calendar-day { 
             aspect-ratio: 1/1; 
             display: flex; 
@@ -54,32 +81,58 @@
             cursor: pointer; 
             font-size: 1em;
             background: #fff;
+            border: 2px solid #eee;
             transition: transform 0.1s;
-            border: 2px solid #eee; /* Стандартна рамка */
         }
 
-        /* Класи для літургійних рамок */
+        /* Кольорові рамки літургії */
         .border-green { border: 2.5px solid var(--lit-green) !important; }
         .border-red { border: 2.5px solid var(--lit-red) !important; }
         .border-violet { border: 2.5px solid var(--lit-violet) !important; }
         .border-white { border: 2.5px solid var(--lit-white) !important; }
 
-        .today { background: var(--franciscan-brown) !important; color: white !important; border-color: var(--franciscan-brown) !important; }
+        .today { 
+            background: var(--franciscan-brown) !important; 
+            color: white !important; 
+            border-color: var(--franciscan-brown) !important; 
+        }
 
         /* Модальне вікно */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center;
-            padding: 15px; box-sizing: border-box;
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); 
+            z-index: 2000; 
+            align-items: center; 
+            justify-content: center;
+            padding: 15px; 
+            box-sizing: border-box;
         }
+
         .modal-content { 
-            background: white; padding: 25px; border-radius: 25px; max-width: 420px; 
-            width: 100%; box-sizing: border-box; text-align: left; box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            background: white; 
+            padding: 25px; 
+            border-radius: 25px; 
+            max-width: 420px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            text-align: left; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
         }
+
         .modal-btn { 
-            background: var(--franciscan-brown); color: white; border: none; width: 100%; 
-            padding: 20px; border-radius: 15px; font-weight: bold; font-size: 1.4em; 
-            cursor: pointer; margin-top: 15px; 
+            background: var(--franciscan-brown); 
+            color: white; 
+            border: none; 
+            width: 100%; 
+            padding: 20px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            font-size: 1.4em; 
+            cursor: pointer; 
+            margin-top: 15px; 
         }
     </style>
 </head>
@@ -90,13 +143,13 @@
     
     <div class="movable-feasts-link" onclick="toggleModal()">Рухомі свята 2026</div>
 
-    <div id="month-label" style="font-weight: bold; margin-bottom: 15px; color: #333;">Квітень 2026</div>
+    <div id="month-label" style="font-weight: bold; margin: 10px 0; color: #333;">Квітень 2026</div>
 
     <div class="calendar-grid" id="calendar-grid">
         <div class="day-name">Пн</div><div class="day-name">Вт</div><div class="day-name">Ср</div>
         <div class="day-name">Чт</div><div class="day-name">Пт</div><div class="day-name">Сб</div>
         <div class="day-name">Нд</div>
-        </div>
+    </div>
 </div>
 
 <div class="modal-overlay" id="modal-overlay">
@@ -117,26 +170,28 @@
         modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    // Приклад функції заповнення (замініть на вашу логіку з Google Sheets)
+    // Функція відображення (використовує ваші дані)
     function renderCalendar() {
         const grid = document.getElementById('calendar-grid');
-        const daysInMonth = 30; // Квітень
-        const startOffset = 2; // Починається з середи
+        const daysInMonth = 30; 
+        const startOffset = 2; // Квітень починається з середи
 
+        // Порожні дні
         for(let i=0; i<startOffset; i++) grid.innerHTML += '<div></div>';
 
+        // Генерація днів
         for(let d=1; d<=daysInMonth; d++) {
-            let borderClass = 'border-white'; // Типово білий (сіра рамка)
-            
-            // Приклад логіки кольорів (буде братися з вашої таблиці):
-            if (d === 3) borderClass = 'border-red'; // Велика П'ятниця
-            if (d === 5) borderClass = 'border-white'; // Великдень
-            if (d > 20) borderClass = 'border-white'; 
+            let borderClass = 'border-white'; // Стандарт
+
+            // Приклад того, як колір підтягується до рамки:
+            if(d === 3) borderClass = 'border-red';    // Велика П'ятниця
+            if(d === 5) borderClass = 'border-white';  // Великдень
+            if(d > 26) borderClass = 'border-white';
 
             const isToday = (d === new Date().getDate() && new Date().getMonth() === 3);
-            const todayClass = isToday ? 'today' : '';
+            const todayStyle = isToday ? 'today' : '';
 
-            grid.innerHTML += `<div class="calendar-day ${borderClass} ${todayClass}">${d}</div>`;
+            grid.innerHTML += `<div class="calendar-day ${borderClass} ${todayStyle}">${d}</div>`;
         }
     }
 
