@@ -49,16 +49,20 @@
 
         /* Стильна коричнева ЛУПА замість календаря */
         .date-input-wrapper::after {
-            content: '🔍'; 
+            content: ""; 
             position: absolute;
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
             pointer-events: none;
-            font-size: 1.1em;
-            filter: sepia(1) saturate(5) hue-rotate(-30deg); /* Робимо лупу коричневою */
+            /* Коричнева напівпрозора лупа */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236F4E37' stroke-width='2.5' opacity='0.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
         }
-
+        
         #date-picker::-webkit-calendar-picker-indicator {
             position: absolute; left: 0; top: 0; width: 100%; height: 100%;
             margin: 0; padding: 0; cursor: pointer; opacity: 0; z-index: 1;
