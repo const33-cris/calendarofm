@@ -94,33 +94,38 @@
     width: 100%; height: 100%;
     background: rgba(0,0,0,0.6); 
     z-index: 2000; 
-    align-items: center;     /* Центрує вертикально */
-    justify-content: center; /* Центрує горизонтально */
-    padding: 20px;
+    align-items: center;     
+    justify-content: center; 
+    padding: 10px; /* Невеликий відступ для мобільних */
+    box-sizing: border-box;
 }
-        .modal-content { 
+
+/* 2. Контент вікна (точно по ширині календаря) */
+.modal-content { 
     background: white; 
     padding: 25px; 
     border-radius: 25px; 
-    max-width: 420px; /* ТАКА Ж ШИРИНА ЯК У КАЛЕНДАРЯ */
-    width: 90%;       /* Відступ від країв на дуже малих екранах */
-    box-sizing: border-box; /* Щоб внутрішні відступи не роздували ширину */
+    max-width: 420px; /* Така ж ширина, як у вашої картки .card */
+    width: 100%;       
+    box-sizing: border-box; 
     text-align: left; 
-    position: relative;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
 }
         .modal-title { font-weight: bold; color: var(--franciscan-brown); font-size: 1.2em; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #efe0d0; padding-bottom: 10px; }
         .modal-list { line-height: 1.8; font-size: 1em; margin-bottom: 20px; }
         .easter-text { color: var(--easter-red); font-weight: bold; } /* ЧЕРВОНИЙ ВЕЛИКДЕНЬ */
+        
         .modal-btn { 
     background: var(--franciscan-brown); 
     color: white; 
     border: none; 
     width: 100%; 
-    padding: 18px;         /* Збільшено відступи навколо тексту */
+    padding: 20px;         /* Ще більше відступів для висоти */
     border-radius: 15px; 
     font-weight: bold; 
-    font-size: 1.3em;      /* ЗБІЛЬШЕНО РОЗМІР ШРИФТУ (було 1.1em) */
+    font-size: 1.4em;      /* Великий розбірливий шрифт */
     cursor: pointer; 
+    margin-top: 10px;
 }
 
         .footer { margin-top: 20px; font-weight: bold; color: var(--franciscan-brown); opacity: 0.6; }
