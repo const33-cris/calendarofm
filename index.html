@@ -255,9 +255,31 @@
         const f = new Date(dt.getFullYear(), dt.getMonth(), 1), l = new Date(dt.getFullYear(), dt.getMonth() + 1, 0);
         let off = f.getDay() === 0 ? 6 : f.getDay() - 1;
         for (let i = 0; i < off; i++) grid.appendChild(document.createElement('div'));
+        
         for (let i = 1; i <= l.getDate(); i++) {
-            const b = document.createElement('div'); b.className = 'calendar-day' + (i === dt.getDate() ? ' active' : '');
-            b.innerText = i; b.onclick = () => { dt.setDate(i); updateUI(); };
+            const b = document.createElement('div');
+            b.className = 'calendar-day' + (i === dt.getDate() ? ' active' : '');
+            
+            // --- ПОЧАТОК ЗМІНИ: КОЛЬОРОВІ РАМКИ ---
+            const y = dt.getFullYear(), m = String(dt.getMonth() + 1).padStart(2, '0'), currD = String(i).padStart(2, '0');
+            const key = `${y}-${m}-${currD}`;
+            const dayData = calendarData[key];
+
+            if (dayData && i !== dt.getDate()) {
+                const borderColors = { 
+                    "зелений": "#2e7d32", 
+                    "білий": "#d4af37", 
+                    "червоний": "#b71c1c", 
+                    "фіолетовий": "#6a1b9a", 
+                    "рожевий": "#d81b60" 
+                };
+                // Встановлюємо колір рамки відповідно до літургійного кольору
+                b.style.border = `2px solid ${borderColors[dayData.color] || "#efe0d0"}`;
+            }
+            // --- КІНЕЦЬ ЗМІНИ ---
+
+            b.innerText = i; 
+            b.onclick = () => { dt.setDate(i); updateUI(); };
             grid.appendChild(b);
         }
     }
