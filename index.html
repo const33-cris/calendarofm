@@ -21,11 +21,10 @@
         .logo-img { width: 110px; height: auto; margin-bottom: 10px; border-radius: 10px; }
         .province-title { font-weight: bold; color: var(--franciscan-brown); margin-bottom: 15px; text-transform: uppercase; font-size: 0.9em; line-height: 1.3; }
 
-        /* Напис-посилання */
         .movable-feasts-link { 
             font-size: 0.85em; font-weight: bold; color: var(--franciscan-brown); 
             text-transform: uppercase; cursor: pointer; text-decoration: underline; 
-            margin-bottom: 10px; transition: 0.3s;
+            margin-bottom: 10px; transition: 0.3s; display: inline-block;
         }
 
         #date-picker { 
@@ -52,28 +51,28 @@
         .nav-btn { background: var(--franciscan-brown); color: white; border: none; padding: 15px; border-radius: 15px; cursor: pointer; flex: 1; font-weight: bold; font-size: 1.2em; }
         .btn-today { font-size: 1em; flex: 1.5; }
 
-        .date-box { background: var(--lit-color); color: white; padding: 20px; border-radius: 22px; margin-bottom: 15px; transition: 0.3s; }
+        .date-box { background: var(--lit-color); color: white; padding: 20px; border-radius: 22px; margin-bottom: 15px; min-height: 100px; }
         .date-side { font-size: 1.05em; opacity: 0.9; } 
         .day-main { font-size: 1.4em; font-weight: bold; margin: 8px 0; } 
         .period-bottom { font-size: 1.1em; font-weight: bold; }
 
         .info-block { text-align: left; background: #fafafa; padding: 15px; border-radius: 15px; border-left: 6px solid var(--lit-color); margin-bottom: 12px; }
         .block-label { font-size: 0.75em; font-weight: bold; color: #999; text-transform: uppercase; }
-        .block-text { font-size: 1.1em; line-height: 1.4; color: #2c1e1a; }
+        .block-text { font-size: 1.1em; line-height: 1.5; color: #2c1e1a; }
         
-        /* СТИЛІ СПЛИВАЮЧОГО ВІКНА */
+        /* МОДАЛЬНЕ ВІКНО */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+            background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px;
         }
         .modal-content {
             background: white; padding: 25px; border-radius: 25px; max-width: 400px; width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: left;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); text-align: left;
         }
-        .modal-title { font-weight: bold; color: var(--franciscan-brown); font-size: 1.3em; margin-bottom: 15px; text-align: center; }
+        .modal-title { font-weight: bold; color: var(--franciscan-brown); font-size: 1.3em; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #efe0d0; padding-bottom: 10px; }
         .modal-list { line-height: 1.8; font-size: 1em; color: #333; margin-bottom: 20px; }
         .modal-btn {
-            background: var(--lit-color); color: white; border: none; width: 100%; padding: 15px;
+            background: var(--franciscan-brown); color: white; border: none; width: 100%; padding: 15px;
             border-radius: 15px; font-weight: bold; font-size: 1.1em; cursor: pointer;
         }
 
@@ -86,15 +85,15 @@
     <div class="modal-content">
         <div class="modal-title">📅 Рухомі свята 2026</div>
         <div class="modal-list">
-            • <b>18.02</b> — Попільна середа<br>
-            • <b>29.03</b> — Пальмова неділя<br>
-            • <b>05.04</b> — <b>ВЕЛИКДЕНЬ</b><br>
-            • <b>14.05</b> — Вознесіння Господнє<br>
-            • <b>24.05</b> — Зіслання Св. Духа<br>
-            • <b>31.05</b> — Пресвятої Трійці<br>
-            • <b>04.06</b> — Тіла і Крові Христа<br>
-            • <b>22.11</b> — Христа Царя<br>
-            • <b>29.11</b> — <b>Початок Адвенту</b>
+            • <b>18 лютого</b> — Попільна середа<br>
+            • <b>29 березня</b> — Пальмова неділя<br>
+            • <b>5 квітня</b> — <b>ВЕЛИКДЕНЬ</b><br>
+            • <b>14 травня</b> — Вознесіння Господнє<br>
+            • <b>24 травня</b> — Зіслання Св. Духа<br>
+            • <b>31 травня</b> — Пресвятої Трійці<br>
+            • <b>4 червня</b> — Тіла і Крові Христа<br>
+            • <b>22 листопада</b> — Христа Царя<br>
+            • <b>29 листопада</b> — <b>Адвент</b>
         </div>
         <button class="modal-btn" onclick="closeModal()">Гаразд</button>
     </div>
@@ -119,7 +118,7 @@
     </div>
 
     <div id="lit-bg" class="date-box">
-        <div id="display-date-top" class="date-side">...</div>
+        <div id="display-date-top" class="date-side">Завантаження...</div>
         <div id="display-day-title" class="day-main">...</div>
         <div id="display-period" class="period-bottom">...</div>
     </div>
@@ -147,15 +146,101 @@
     let calendarData = {};
     let dt = new Date();
 
-    // Функції вікна
     function openModal() { document.getElementById('feastModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('feastModal').style.display = 'none'; }
 
     async function loadData() {
         try {
-            const response = await fetch(CSV_URL + '&t=' + new Date().getTime());
+            // Додаємо випадкове число до URL, щоб обійти кеш браузера
+            const response = await fetch(CSV_URL + '&cache=' + Math.random());
             const text = await response.text();
             const lines = text.split(/\r?\n/);
+            
             for (let i = 1; i < lines.length; i++) {
                 const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (row.length > 1 && row[0]) {
+                    const key = row[0].trim().replace(/"/g, "");
+                    calendarData[key] = {
+                        title: (row[1] || "").replace(/"/g, ""),
+                        period: (row[2] || "").replace(/"/g, ""),
+                        color: (row[3] || "зелений").replace(/"/g, "").trim().toLowerCase(),
+                        mass: (row[4] || "").replace(/"/g, ""),
+                        lh: (row[5] || "").replace(/"/g, ""),
+                        readings: (row[6] || "").replace(/"/g, "")
+                    };
+                }
+            }
+            updateUI();
+        } catch (e) { 
+            console.error("Помилка завантаження:", e);
+            document.getElementById('display-date-top').innerText = "Помилка зв'язку з таблицею";
+        }
+    }
+
+    function changeDate(days) { dt.setDate(dt.getDate() + days); updateUI(); }
+    function resetDate() { dt = new Date(); updateUI(); }
+    function goToDate(val) { if(val) { dt = new Date(val); updateUI(); } }
+
+    function toggleCalendar() {
+        const grid = document.getElementById('calendar-grid');
+        const btn = document.getElementById('main-toggle-btn');
+        if (grid.style.display === "grid") {
+            grid.style.display = "none";
+            btn.innerText = "Весь місяць";
+        } else {
+            grid.style.display = "grid";
+            btn.innerText = "Сховати місяць";
+            renderCalendar();
+        }
+    }
+
+    function updateUI() {
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const d = String(dt.getDate()).padStart(2, '0');
+        const k = `${y}-${m}-${d}`;
+        const day = calendarData[k];
+        
+        document.getElementById('date-picker').value = k;
+        document.getElementById('display-date-top').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
+        
+        if (day) {
+            document.getElementById('display-day-title').innerHTML = day.title.replace(/;/g, ';<br>');
+            document.getElementById('display-period').innerText = day.period;
+            document.getElementById('data-mass').innerText = day.mass || "Згідно з календарем";
+            document.getElementById('data-lh').innerText = day.lh || "-";
+            document.getElementById('data-readings').innerHTML = day.readings.replace(/;/g, ';<br>');
+            
+            const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a", "рожевий": "#d81b60" };
+            const activeColor = colors[day.color] || "#2e7d32";
+            document.getElementById('lit-bg').style.background = activeColor;
+            document.documentElement.style.setProperty('--lit-color', activeColor);
+        } else {
+            document.getElementById('display-day-title').innerText = "Дані відсутні";
+            document.getElementById('display-period').innerText = "";
+            document.getElementById('data-mass').innerText = "...";
+            document.getElementById('lit-bg').style.background = "#2e7d32";
+        }
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const grid = document.getElementById('calendar-grid');
+        grid.innerHTML = '';
+        ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'].forEach(n => {
+            const d = document.createElement('div'); d.className='day-name'; d.innerText=n; grid.appendChild(d);
+        });
+        const f = new Date(dt.getFullYear(), dt.getMonth(), 1);
+        const l = new Date(dt.getFullYear(), dt.getMonth() + 1, 0);
+        let off = f.getDay() === 0 ? 6 : f.getDay() - 1;
+        for (let i = 0; i < off; i++) grid.appendChild(document.createElement('div'));
+        for (let i = 1; i <= l.getDate(); i++) {
+            const b = document.createElement('div'); b.className = 'calendar-day' + (i === dt.getDate() ? ' active' : '');
+            b.innerText = i; b.onclick = () => { dt.setDate(i); updateUI(); };
+            grid.appendChild(b);
+        }
+    }
+    loadData();
+</script>
+</body>
+</html>
