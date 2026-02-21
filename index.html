@@ -104,10 +104,14 @@
     <div class="province-title">Літургійний Календар Провінції св. Архангела Михаїла</div>
     
     <div class="calendar-nav">
-        <div class="movable-feasts-link" onclick="openModal()">📅 РУХОМІ СВЯТА 2026</div>
+    <div class="movable-feasts-link" onclick="openModal()">📅 РУХОМІ СВЯТА 2026</div>
+    
+    <div class="date-input-wrapper">
         <input type="date" id="date-picker" onchange="goToDate(this.value)">
-        <button id="main-toggle-btn" class="toggle-calendar-btn" onclick="toggleCalendar()">Весь місяць</button>
     </div>
+    
+    <button id="main-toggle-btn" class="toggle-calendar-btn" onclick="toggleCalendar()">Весь місяць</button>
+</div>
 
     <div id="calendar-grid" class="calendar-grid"></div>
     
