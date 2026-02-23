@@ -230,11 +230,11 @@
         document.getElementById('display-date-top').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
         
         if (day) {
-            document.getElementById('display-day-title').innerHTML = day.title.replace(/;/g, ';<br>');
+            document.getElementById('display-day-title').innerHTML = day.title.split(';').join('<br>');;
             document.getElementById('display-period').innerText = day.period;
             document.getElementById('data-mass').innerText = day.mass || "Згідно з календарем";
             document.getElementById('data-lh').innerText = day.lh || "-";
-            document.getElementById('data-readings').innerHTML = day.readings.replace(/;/g, ';<br>');
+            document.getElementById('data-readings').innerHTML = day.readings.split(';').join('<br>');
             
             // Оновлення блоку УВАГА
 const attnBlock = document.getElementById('attention-block');
