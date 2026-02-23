@@ -235,24 +235,23 @@
             document.getElementById('data-lh').innerText = day.lh || "-";
             document.getElementById('data-readings').innerHTML = day.readings.replace(/;/g, ';<br>');
             
-            // Відображення OFM
-            const ofmEl = document.getElementById('ofm-box');
-            if(day.ofm && day.ofm.trim() !== "") {
-                ofmEl.innerHTML = "✠ " + day.ofm;
-                ofmEl.style.display = "block";
-            } else {
-                ofmEl.style.display = "none";
-            }
+            // Оновлення блоку УВАГА
+const attnBlock = document.getElementById('attention-block');
+if (day.attention && day.attention.trim() !== "") {
+    document.getElementById('data-attention').innerText = day.attention;
+    attnBlock.style.display = "block";
+} else {
+    attnBlock.style.display = "none";
+}
 
-            // Відображення Уваги
-            const attnEl = document.getElementById('attention-box');
-            if(day.attention && day.attention.trim() !== "") {
-                attnEl.innerHTML = "УВАГА: " + day.attention;
-                attnEl.style.display = "block";
-            } else {
-                attnEl.style.display = "none";
-            }
-
+// Оновлення блоку OFM (тепер він просто один із блоків)
+const ofmBlock = document.getElementById('ofm-block');
+if (day.ofm && day.ofm.trim() !== "") {
+    document.getElementById('data-ofm').innerText = day.ofm;
+    ofmBlock.style.display = "block";
+} else {
+    ofmBlock.style.display = "none";
+}
             const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a", "рожевий": "#d81b60" };
             const activeColor = colors[day.color] || "#2e7d32";
             document.getElementById('lit-bg').style.background = activeColor;
