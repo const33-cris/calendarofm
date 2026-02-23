@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="uk">
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Календар OFM</title>
     <link rel="icon" href="tau.png">
+    
     <style>
         :root { 
             --lit-color: #2e7d32; 
@@ -94,7 +96,12 @@
             display: none;
             text-align: left;
         }
-        
+        .modal-list { 
+    line-height: 2.2;
+    font-size: 1em; 
+    margin-bottom: 20px;
+    padding-left: 10px; /* Додасть невеликий відступ зліва, щоб список не "прилипав" до краю */
+}
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 10px; box-sizing: border-box;
@@ -106,6 +113,7 @@
         .footer { margin-top: 20px; font-weight: bold; color: var(--franciscan-brown); opacity: 0.6; }
     </style>
 </head>
+    
 <body>
 
 <div id="feastModal" class="modal-overlay">
@@ -129,7 +137,6 @@
 <div class="card">
     <img src="SMichaele.gif" alt="Лого" class="logo-img">
     <div class="province-title">Літургійний Календар<br>Провінції св. Архангела Михаїла</div>
-    
     <div id="ofm-box"></div> <div class="calendar-nav">
         <div class="movable-feasts-link" onclick="openModal()">РУХОМІ СВЯТА 2026</div>
         <div class="date-input-wrapper">
