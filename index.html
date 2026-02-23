@@ -229,28 +229,37 @@
         document.getElementById('display-date-top').innerText = dt.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
         
         if (day) {
-            document.getElementById('display-day-title').innerHTML = day.title.replace(/;/g, ';<br>');
-            document.getElementById('display-period').innerText = day.period;
-            document.getElementById('data-mass').innerText = day.mass || "Згідно з календарем";
-            document.getElementById('data-lh').innerText = day.lh || "-";
-            document.getElementById('data-readings').innerHTML = day.readings.replace(/;/g, ';<br>');
-            
-            // Оновлення блоку УВАГА
-const attnBlock = document.getElementById('attention-block');
-if (day.attention && day.attention.trim() !== "") {
-    document.getElementById('data-attention').innerText = day.attention;
-    attnBlock.style.display = "block";
-} else {
-    attnBlock.style.display = "none";
-}
+    // Назва дня: прибираємо ';' і ставимо перенос
+    document.getElementById('display-day-title').innerHTML = day.title.split(';').join('<br>');
+    
+    document.getElementById('display-period').innerText = day.period;
+    
+    // Меса: теж додаємо можливість переносу через ';'
+    document.getElementById('data-mass').innerHTML = day.mass.split(';').join('<br>');
+    
+    document.getElementById('data-lh').innerText = day.lh || "-";
+    
+    // Читання: вже було з переносом, але переконайтеся, що через split/join
+    document.getElementById('data-readings').innerHTML = day.readings.split(';').join('<br>');
 
-// Оновлення блоку OFM (тепер він просто один із блоків)
-const ofmBlock = document.getElementById('ofm-block');
-if (day.ofm && day.ofm.trim() !== "") {
-    document.getElementById('data-ofm').innerText = day.ofm;
-    ofmBlock.style.display = "block";
-} else {
-    ofmBlock.style.display = "none";
+    // Увага
+    const attnBlock = document.getElementById('attention-block');
+    if (day.attention && day.attention.trim() !== "") {
+        document.getElementById('data-attention').innerHTML = day.attention.split(';').join('<br>');
+        attnBlock.style.display = "block";
+    } else {
+        attnBlock.style.display = "none";
+    }
+
+    // OFM
+    const ofmBlock = document.getElementById('ofm-block');
+    if (day.ofm && day.ofm.trim() !== "") {
+        document.getElementById('data-ofm').innerHTML = day.ofm.split(';').join('<br>');
+        ofmBlock.style.display = "block";
+    } else {
+        ofmBlock.style.display = "none";
+    }
+    
 }
             const colors = { "зелений": "#2e7d32", "білий": "#d4af37", "червоний": "#b71c1c", "фіолетовий": "#6a1b9a", "рожевий": "#d81b60" };
             const activeColor = colors[day.color] || "#2e7d32";
