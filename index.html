@@ -145,7 +145,27 @@
             border-radius: 15px; cursor: default; flex: 2.5; font-weight: bold;
             font-size: 1em; text-transform: capitalize;
             display: flex; align-items: center; justify-content: center; text-align: center;
+            cursor: pointer;
         }
+        #year-view {
+            display: none; margin: 0 0 6px 0;
+        }
+        .yv-year {
+            color: var(--franciscan-brown); font-weight: bold; font-size: 1em;
+            margin: 10px 0 6px; text-align: center;
+        }
+        .yv-months {
+            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+        }
+        .yv-btn {
+            background: #efe0d0; color: var(--franciscan-brown);
+            border: 2px solid var(--franciscan-brown); padding: 10px 14px;
+            border-radius: 12px; cursor: pointer; font-weight: bold;
+            font-size: 0.9em; touch-action: manipulation; transition: opacity 0.2s;
+            min-width: 80px;
+        }
+        .yv-btn:active { opacity: 0.7; }
+        .yv-active { background: var(--franciscan-brown); color: white; }
     </style>
 </head>
 <body>
@@ -160,9 +180,10 @@
 
     <div class="month-nav" id="month-nav">
         <button class="month-nav-btn" onclick="changeMonth(-1)">←</button>
-        <div class="month-nav-label" id="month-nav-label"></div>
+        <div class="month-nav-label" id="month-nav-label" onclick="toggleYearView()"></div>
         <button class="month-nav-btn" onclick="changeMonth(1)">→</button>
     </div>
+    <div id="year-view"></div>
     <div class="calendar-grid" id="calendar-grid"></div>
 
     <div class="nav-buttons">
@@ -535,7 +556,46 @@
 
     // --- Navigate calendar by month ---
     window.changeMonth = function(delta) {
+        document.getElementById('year-view').style.display = 'none';
         calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + delta, 1);
+        renderCalendarGrid();
+    };
+
+    // --- Year view (month picker) ---
+    window.toggleYearView = function() {
+        const yv = document.getElementById('year-view');
+        if (yv.style.display === 'none' || yv.style.display === '') {
+            yv.style.display = 'block';
+            renderYearView();
+        } else {
+            yv.style.display = 'none';
+        }
+    };
+
+    function renderYearView() {
+        const DATA_MONTHS = [
+            {year: 2026, months: [10, 11]},
+            {year: 2027, months: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+        ];
+        let html = '';
+        const cy = calendarViewDate.getFullYear();
+        const cm = calendarViewDate.getMonth();
+        for (const group of DATA_MONTHS) {
+            html += '<div class="yv-year">' + group.year + '</div><div class="yv-months">';
+            for (const m of group.months) {
+                const isActive = (cy === group.year && cm === m);
+                html += '<button class="yv-btn' + (isActive ? ' yv-active' : '') + '" ' +
+                    'onclick="selectYearViewMonth(' + group.year + ',' + m + ')">' +
+                    MONTH_NAMES_UK[m] + '</button>';
+            }
+            html += '</div>';
+        }
+        document.getElementById('year-view').innerHTML = html;
+    }
+
+    window.selectYearViewMonth = function(year, month) {
+        document.getElementById('year-view').style.display = 'none';
+        calendarViewDate = new Date(year, month, 1);
         renderCalendarGrid();
     };
 
@@ -553,6 +613,7 @@
         } else {
             grid.style.display = 'none';
             nav.style.display = 'none';
+            document.getElementById('year-view').style.display = 'none';
             document.getElementById('toggle-cal-btn').textContent = '📆 Календар місяця';
         }
     };
