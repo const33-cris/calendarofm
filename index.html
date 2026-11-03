@@ -97,9 +97,9 @@
             background: var(--lit-color); color: white; padding: 20px; border-radius: 22px;
             margin-bottom: 15px; min-height: 100px;
         }
-        .day-main { font-size: 1.35em; font-weight: bold; margin: 8px 0; }
-        .day-sub { font-size: 0.9em; opacity: 0.85; margin-top: 4px; }
-        .day-type { font-size: 0.8em; opacity: 0.7; margin-top: 2px; font-style: italic; }
+        .day-weekday { font-size: 1.05em; opacity: 0.88; margin-bottom: 4px; font-weight: normal; }
+        .day-main { font-size: 1.35em; font-weight: bold; margin: 6px 0; }
+        .day-sub { font-size: 1.05em; opacity: 0.88; margin-top: 4px; font-weight: normal; }
 
         .info-block {
             text-align: left; background: #fafafa; padding: 15px; border-radius: 15px;
@@ -373,13 +373,23 @@
 
         // Date box
         html += '<div class="date-box" style="background:' + entry.color + ';">';
-        html += '<div style="font-size:0.85em;opacity:0.8;">' + escH(entry.dayOfWeek) + ' · ' + escH(entry.date) + '</div>';
+        // Line 1: weekday only (no date)
+        html += '<div class="day-weekday">' + escH(entry.dayOfWeek) + '</div>';
+        // Line 2: day title
         html += '<div class="day-main">' + escH(entry.title) + '</div>';
-        if (!isEmpty(entry.season)) {
-            html += '<div class="day-sub">' + escH(entry.season) + '</div>';
+        // Line 3: season or day type (for memorial/feast/solemnity)
+        const SPECIAL_TYPES = ['обов\'язков', 'свято', 'урочистість', 'тридення'];
+        const typeLC = (entry.dayType || '').toLowerCase();
+        const isSpecialType = SPECIAL_TYPES.some(function(t) { return typeLC.indexOf(t) !== -1; });
+        let line3 = '';
+        if (isSpecialType) {
+            line3 = entry.dayType;
+        } else {
+            // Show season; rename "Звичайний час" → "Звичайний період"
+            line3 = (entry.season || '').replace(/Звичайний час/gi, 'Звичайний період');
         }
-        if (!isEmpty(entry.dayType)) {
-            html += '<div class="day-type">' + escH(entry.dayType) + '</div>';
+        if (!isEmpty(line3)) {
+            html += '<div class="day-sub">' + escH(line3) + '</div>';
         }
         html += '</div>';
 
