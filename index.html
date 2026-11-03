@@ -683,20 +683,15 @@
     function computeMovableFeasts(year) {
         var E = computeEaster(year);
         var feasts = [
-            {name: 'Попільна середа',                    date: addDays(E, -46)},
-            {name: 'Страсна (Вербна) неділя',            date: addDays(E, -7)},
-            {name: 'Велика середа',                      date: addDays(E, -4)},
-            {name: 'Великий четвер',                     date: addDays(E, -3)},
-            {name: 'Страсна пʼятниця',                  date: addDays(E, -2)},
-            {name: 'Велика субота',                      date: addDays(E, -1)},
-            {name: 'Великодня неділя (Пасха)',           date: E},
+            {name: 'Вербна неділя',                      date: addDays(E, -7)},
+            {name: 'Великдень',                          date: E},
             {name: 'Вознесіння Господнє',                date: addDays(E, 39)},
-            {name: 'Зіслання Святого Духа (Пʼятдесятниця)', date: addDays(E, 49)},
+            {name: 'Зіслання Святого Духа',              date: addDays(E, 49)},
             {name: 'Пресвята Трійця',                    date: addDays(E, 56)},
-            {name: 'Пресвяті Тіло і Кров Христа',       date: addDays(E, 63)},
+            {name: 'Пресвятих Тіла і Крові Христа',     date: addDays(E, 63)},
             {name: 'Найсвятіше Серце Ісуса',             date: addDays(E, 68)},
             {name: 'Христа Царя Всесвіту',               date: christTheKing(year)},
-            {name: 'Перша неділя Адвенту',               date: firstAdventSunday(year)},
+            {name: 'Перша Неділя Адвенту',               date: firstAdventSunday(year)},
         ];
         return feasts;
     }
