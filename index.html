@@ -47,24 +47,6 @@
             margin-bottom: 12px; display: inline-block;
         }
 
-        .date-input-wrapper { position: relative; width: 100%; margin-top: 5px; }
-        #date-picker {
-            border: 2px solid #efe0d0; border-radius: 12px; padding: 12px; font-size: 1.1em;
-            color: var(--franciscan-brown); width: 100%; outline: none;
-            cursor: pointer; background: white; font-family: inherit;
-            appearance: none; -webkit-appearance: none;
-        }
-        .date-input-wrapper::after {
-            content: ""; position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            width: 20px; height: 20px; pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236F4E37' stroke-width='2.5' opacity='0.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z' /%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-size: contain;
-        }
-        #date-picker::-webkit-calendar-picker-indicator {
-            position: absolute; left: 0; top: 0; width: 100%; height: 100%;
-            margin: 0; padding: 0; cursor: pointer; opacity: 0; z-index: 1;
-        }
-
         .toggle-calendar-btn {
             background: white; border: 2px solid var(--franciscan-brown); color: var(--franciscan-brown);
             padding: 14px; border-radius: 15px; cursor: pointer; font-weight: bold;
@@ -148,9 +130,21 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .month-label {
-            font-weight: bold; color: var(--franciscan-brown); font-size: 1.1em;
-            margin-bottom: 5px; text-transform: capitalize;
+        .month-nav {
+            display: none; justify-content: space-between; gap: 8px;
+            margin: 10px 0 5px 0; touch-action: manipulation;
+        }
+        .month-nav-btn {
+            background: var(--franciscan-brown); color: white; border: none; padding: 13px;
+            border-radius: 15px; cursor: pointer; flex: 1; font-weight: bold;
+            font-size: 1.2em; touch-action: manipulation; transition: opacity 0.2s;
+        }
+        .month-nav-btn:active { opacity: 0.8; }
+        .month-nav-label {
+            background: var(--franciscan-brown); color: white; border: none; padding: 13px 10px;
+            border-radius: 15px; cursor: default; flex: 2.5; font-weight: bold;
+            font-size: 1em; text-transform: capitalize;
+            display: flex; align-items: center; justify-content: center; text-align: center;
         }
     </style>
 </head>
@@ -162,13 +156,13 @@
 
     <a class="movable-feasts-link" onclick="openModal()">📅 Рухомі свята 2027</a>
 
-    <div class="date-input-wrapper">
-        <input type="date" id="date-picker">
-    </div>
-
     <button class="toggle-calendar-btn" id="toggle-cal-btn" onclick="toggleCalendar()">📆 Календар місяця</button>
 
-    <div id="month-label" class="month-label" style="display:none;"></div>
+    <div class="month-nav" id="month-nav">
+        <button class="month-nav-btn" onclick="changeMonth(-1)">←</button>
+        <div class="month-nav-label" id="month-nav-label"></div>
+        <button class="month-nav-btn" onclick="changeMonth(1)">→</button>
+    </div>
     <div class="calendar-grid" id="calendar-grid"></div>
 
     <div class="nav-buttons">
@@ -227,6 +221,8 @@
     let calendarData = {}; // key: 'YYYY-MM-DD' → array of row objects
     let currentDate = new Date();
     let calendarOpen = false;
+    // Separate view date for calendar grid (navigates by month independently)
+    let calendarViewDate = new Date(currentDate);
     let dataLoaded = false;
 
     // --- CSV Parser (RFC 4180 compliant) ---
@@ -457,8 +453,7 @@
         card.style.borderTopColor = firstColor;
         document.documentElement.style.setProperty('--lit-color', firstColor);
 
-        // Update date picker
-        document.getElementById('date-picker').value = key;
+        // (date picker removed)
 
         if (!entries || entries.length === 0) {
             content.innerHTML = '<div class="date-box"><div class="day-main">Немає даних для цієї дати</div></div>';
@@ -476,6 +471,7 @@
 
         // Update calendar grid if open
         if (calendarOpen) {
+            calendarViewDate = new Date(currentDate);
             renderCalendarGrid();
         }
     }
@@ -483,12 +479,10 @@
     // --- Calendar grid ---
     function renderCalendarGrid() {
         const grid = document.getElementById('calendar-grid');
-        const label = document.getElementById('month-label');
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
+        const year = calendarViewDate.getFullYear();
+        const month = calendarViewDate.getMonth();
 
-        label.textContent = MONTH_NAMES_UK[month] + ' ' + year;
-        label.style.display = 'block';
+        document.getElementById('month-nav-label').textContent = MONTH_NAMES_UK[month] + ' ' + year;
 
         let html = '';
         // Day name headers
@@ -516,6 +510,7 @@
         for (let d = 1; d <= daysInMonth; d++) {
             const dayDate = new Date(year, month, d);
             const dayKey = dateToKey(dayDate);
+            // Use calendarViewDate year/month for day selection
             const entries = calendarData[dayKey];
             const isActive = (dayKey === todayKey);
             let borderColor = '#efe0d0';
@@ -534,22 +529,30 @@
 
     // Expose for onclick
     window._selectDay = function(day) {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        currentDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth(), day);
         showDay();
+    };
+
+    // --- Navigate calendar by month ---
+    window.changeMonth = function(delta) {
+        calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + delta, 1);
+        renderCalendarGrid();
     };
 
     // --- Toggle calendar ---
     window.toggleCalendar = function() {
         const grid = document.getElementById('calendar-grid');
-        const label = document.getElementById('month-label');
+        const nav = document.getElementById('month-nav');
         calendarOpen = !calendarOpen;
         if (calendarOpen) {
+            calendarViewDate = new Date(currentDate);
             grid.style.display = 'grid';
+            nav.style.display = 'flex';
             renderCalendarGrid();
             document.getElementById('toggle-cal-btn').textContent = '📆 Сховати календар';
         } else {
             grid.style.display = 'none';
-            label.style.display = 'none';
+            nav.style.display = 'none';
             document.getElementById('toggle-cal-btn').textContent = '📆 Календар місяця';
         }
     };
@@ -564,16 +567,6 @@
         currentDate = new Date();
         showDay();
     };
-
-    // --- Date picker ---
-    document.getElementById('date-picker').addEventListener('change', function() {
-        const val = this.value;
-        if (val) {
-            const parts = val.split('-');
-            currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-            showDay();
-        }
-    });
 
     // --- Modal ---
     window.openModal = function() {
