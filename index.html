@@ -403,7 +403,7 @@
         // Date box
         html += '<div class="date-box" style="background:' + entry.color + ';">';
         // Line 1: weekday only (no date)
-        html += '<div class="day-weekday">' + escH(entry.dayOfWeek) + '</div>';
+        html += '<div class="day-weekday">' + escH(entry.dayOfWeek) + (entry.date ? ', ' + formatFullDate(entry.date) : '') + '</div>';
         // Line 2: day title
         html += '<div class="day-main">' + escH(entry.title) + '</div>';
         // Line 3: season or day type (for memorial/feast/solemnity)
@@ -470,6 +470,15 @@
         return escH(text).replace(/\n/g, '<br>');
     }
 
+    function formatFullDate(dateStr) {
+        var months = ['','січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+        var parts = (dateStr || '').split('.');
+        if (parts.length < 3) return dateStr;
+        var day = parseInt(parts[0], 10);
+        var mon = parseInt(parts[1], 10);
+        var year = parts[2];
+        return day + '\u00a0' + months[mon] + '\u00a0' + year;
+    }
     function escH(str) {
         if (!str) return '';
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
