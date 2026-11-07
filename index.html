@@ -378,7 +378,8 @@
                     ofm: row[8] || '',
                     attention: row[9] || '',
                     optional: row[10] || '',
-                    hours: row[11] || ''
+                    hours: row[11] || '',
+                    namedays: row[12] || ''
                 };
 
                 if (!calendarData[key]) {
@@ -422,6 +423,9 @@
         html += '</div>';
 
         // Info blocks
+        if (!isEmpty(entry.namedays)) {
+            html += infoBlockSpecial('🎉 Іменини братів', entry.namedays.split(/\s*;\s*/).join('\n'), '#6F4E37', '#f5ede4');
+        }
         if (!isEmpty(entry.mass)) {
             html += infoBlock('Меса', entry.mass, entry.color);
         }
